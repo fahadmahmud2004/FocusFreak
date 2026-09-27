@@ -1,0 +1,19 @@
+.DS_Store
+__pycache__/
+*.pyc
+*.apk
+*.aab
+.vscode/
+.idea/
+*.iml
+
+# Flutter / Android build output
+app/focusfreak_app/build/
+app/focusfreak_app/.dart_tool/
+app/focusfreak_app/.flutter-plugins-dependencies
+app/focusfreak_app/android/.gradle/
+app/focusfreak_app/android/.kotlin/
+app/focusfreak_app/android/local.properties
+app/focusfreak_app/android/key.properties
+*.jks
+*.keystore

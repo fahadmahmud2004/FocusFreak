@@ -1,0 +1,160 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- Bluetooth Classic SPP to the bot. docs/PROTOCOL.md §1.
+
+         API 31+ uses the runtime BLUETOOTH_CONNECT / BLUETOOTH_SCAN pair;
+         older phones use the legacy trio, where scanning still counts as
+         location access. `neverForLocation` is declared because this app never
+         derives location from a scan — it talks to one bonded serial module. -->
+    <uses-permission android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
+        android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation" />
+
+    <!-- The bot is optional, always: a phone with no Bluetooth radio must
+         still install and run the whole standalone app. -->
+    <uses-feature android:name="android.hardware.bluetooth"
+        android:required="false" />
+
+    <!-- The alarm at the end of a block.
+
+         SCHEDULE_EXACT_ALARM is requested at runtime on 13+; USE_EXACT_ALARM
+         is the grant Google reserves for apps whose alarm *is* the feature,
+         which this one is — a notification that arrives "some time after" the
+         block ended is not an alarm. RECEIVE_BOOT_COMPLETED is what lets a
+         pending alarm survive a restart. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- A wake-up alarm shows over the lock screen. -->
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+
+    <!-- Phone-side verification.
+
+         The foreground service is not an optimisation: with the app
+         backgrounded and the screen off, the screen receiver and the
+         accelerometer listener stop delivering within minutes, and the app
+         would report its last reading — "holding" — at exactly the moment
+         someone walked away. See FocusTrackingService.
+
+         PACKAGE_USAGE_STATS is an appops grant the user makes on a settings
+         screen, not a runtime permission; declaring it is what makes the app
+         appear in that screen's list at all. Without the grant the appUsage
+         factor reads unavailable and is excluded from the verdict. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
+    <!-- Stillness stands in for the dock reed switch on a bot-less phone
+         (docs/APP_SPEC.md §4). Optional: a phone without one simply reports
+         the dock factor as unavailable. -->
+    <uses-feature android:name="android.hardware.sensor.accelerometer"
+        android:required="false" />
+
+    <application
+        android:label="Focus Freak"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:taskAffinity=""
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+            <!-- Specifies an Android theme to apply to this Activity as soon as
+                 the Android process has started. This theme is visible to the user
+                 while the Flutter UI initializes. After that, this theme continues
+                 to determine the Window background behind the Flutter UI. -->
+            <meta-data
+              android:name="io.flutter.embedding.android.NormalTheme"
+              android:resource="@style/NormalTheme"
+              />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <!-- Don't delete the meta-data below.
+             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+
+        <!-- Keeps the verification factors reporting while nobody is looking.
+             Not exported: only this app ever starts it. -->
+        <service
+            android:name=".FocusTrackingService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
+        <!-- flutter_local_notifications declares only its permissions; the
+             receivers that actually deliver a *scheduled* notification have to
+             be declared here. Without the boot receiver, an alarm set before a
+             restart quietly never arrives. -->
+        <receiver
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"
+            android:exported="false" />
+        <receiver
+            android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver"
+            android:exported="false" />
+        <receiver
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+    </application>
+    <!-- Required to query activities that can process text, see:
+         https://developer.android.com/training/package-visibility and
+         https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
+
+         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT"/>
+            <data android:mimeType="text/plain"/>
+        </intent>
+
+        <!-- API 30 package visibility. Without these, `resolveActivity`
+             returns null even for screens that exist, and every guarded
+             launch below would silently decide the feature is unavailable.
+
+             The launcher: UsageStatsPlugin excludes it from counting as
+             "another app", because passing through the home screen is not
+             using one. -->
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.HOME" />
+        </intent>
+
+        <!-- The OEM autostart screens PowerSettingsPlugin offers a shortcut
+             to. Each is still resolveActivity-checked before launch; these
+             entries only make the check able to see them. -->
+        <package android:name="com.miui.securitycenter" />
+        <package android:name="com.letv.android.letvsafe" />
+        <package android:name="com.coloros.safecenter" />
+        <package android:name="com.oppo.safe" />
+        <package android:name="com.iqoo.secure" />
+        <package android:name="com.vivo.permissionmanager" />
+        <package android:name="com.huawei.systemmanager" />
+        <package android:name="com.samsung.android.lool" />
+    </queries>
+</manifest>
