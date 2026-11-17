@@ -1,0 +1,1068 @@
+<title>FocusFreak Web</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@300;500&family=Hind+Siliguri:wght@400;500;600&display=swap">
+<style>
+/* Layout: one phone-width app column (max 440px), centered; tab bar pinned to the bottom;
+   session, done, break and review are full-screen layers above it. Gold on ink, from the app's logo. */
+:root{
+  --bg:#0B0B0D; --surface:#141417; --raised:#1C1C21; --line:#2A2A31;
+  --fg:#F3EFE4; --muted:#A09B90; --accent:#F0C44A; --accent-fill:#F0C44A; --accent-soft:rgba(240,196,74,.14);
+  --on-accent:#1A1405; --ok:#21CE73; --warn:#F5A623; --bad:#E5484D; --claimed:#4A4A55; --scrim:rgba(0,0,0,.62);
+  --c0:#3E6BFF; --c1:#00CA8C; --c2:#FF8A1F; --c3:#4FCB4F;
+  --f-display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --f-body:Inter,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  --f-bn:'Hind Siliguri','Noto Sans Bengali',sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#FAF8F4; --surface:#FFFFFF; --raised:#F1EEE7; --line:#E0DCD2;
+    --fg:#17150F; --muted:#69655B; --accent:#8F6410; --accent-fill:#F0C44A; --accent-soft:rgba(184,134,42,.14);
+    --on-accent:#1A1405; --ok:#12884A; --warn:#B26E08; --bad:#C2363B; --claimed:#CFCAC0; --scrim:rgba(20,18,12,.45);
+    --c0:#2F56E0; --c1:#00A574; --c2:#D96A00; --c3:#2E9E33; color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#FAF8F4; --surface:#FFFFFF; --raised:#F1EEE7; --line:#E0DCD2;
+  --fg:#17150F; --muted:#69655B; --accent:#8F6410; --accent-fill:#F0C44A; --accent-soft:rgba(184,134,42,.14);
+  --on-accent:#1A1405; --ok:#12884A; --warn:#B26E08; --bad:#C2363B; --claimed:#CFCAC0; --scrim:rgba(20,18,12,.45);
+  --c0:#2F56E0; --c1:#00A574; --c2:#D96A00; --c3:#2E9E33; color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#0B0B0D; --surface:#141417; --raised:#1C1C21; --line:#2A2A31;
+  --fg:#F3EFE4; --muted:#A09B90; --accent:#F0C44A; --accent-fill:#F0C44A; --accent-soft:rgba(240,196,74,.14);
+  --on-accent:#1A1405; --ok:#21CE73; --warn:#F5A623; --bad:#E5484D; --claimed:#4A4A55; --scrim:rgba(0,0,0,.62);
+  --c0:#3E6BFF; --c1:#00CA8C; --c2:#FF8A1F; --c3:#4FCB4F; color-scheme:dark;
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.45;-webkit-tap-highlight-color:transparent}
+html[lang="bn"] body{font-family:var(--f-bn),var(--f-body)}
+*{box-sizing:border-box}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;margin:0;text-wrap:balance;letter-spacing:-.01em}
+html[lang="bn"] h1,html[lang="bn"] h2,html[lang="bn"] h3{font-family:var(--f-bn)}
+h1{font-size:28px;line-height:1.1}
+h2{font-size:19px}
+h3{font-size:15px}
+p{margin:0}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums slashed-zero}
+.muted{color:var(--muted)}
+.eyebrow{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+html[lang="bn"] .eyebrow{letter-spacing:0;font-size:12px}
+
+#app{max-width:440px;margin:0 auto;min-height:100%;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px calc(92px + env(safe-area-inset-bottom,0px))}
+@media (min-width:600px){#app{border-inline:1px solid var(--line)}}
+.view{display:flex;flex-direction:column;gap:16px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:8px}
+.row{display:flex;align-items:center;gap:10px}
+.wrap{flex-wrap:wrap}
+.between{justify-content:space-between}
+.grow{flex:1;min-width:0}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.card.flat{background:transparent}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:14px;background:var(--raised);border:1px solid var(--line);font-weight:600;font-size:15px}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent-fill);color:var(--on-accent);border-color:transparent}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.big{min-height:56px;font-size:17px;border-radius:18px;width:100%}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--bad)}
+.btn svg{width:20px;height:20px;flex:none}
+.btn.sm svg{width:16px;height:16px}
+.btn.sm{min-height:34px;padding:0 12px;font-size:13px;border-radius:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:14px;font-weight:500;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.chip .dot{width:8px;height:8px;border-radius:50%}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;background:var(--raised);border:1px solid var(--line)}
+.pill.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,transparent)}
+.pill.warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 40%,transparent)}
+.pill.gold{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+.pill .blip{width:7px;height:7px;border-radius:50%;background:currentColor}
+.pill.ok .blip{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
+.sample-flag{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px dashed var(--line);border-radius:6px;padding:1px 5px}
+.banner{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:12px;border:1px dashed var(--line);font-size:13px;color:var(--muted)}
+
+/* tab bar */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+.tabbar .in{max-width:440px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 0 9px;font-size:11px;font-weight:600;color:var(--muted)}
+.tab svg{width:22px;height:22px}
+.tab[aria-current="page"]{color:var(--accent)}
+
+/* today */
+.goal{display:grid;grid-template-columns:132px 1fr;gap:16px;align-items:center}
+.ring{position:relative;width:132px;height:132px}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .lbl{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.ring .big{font-family:var(--f-mono);font-size:24px;font-weight:500;font-variant-numeric:tabular-nums}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kv div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.kv b{font-family:var(--f-mono);font-size:19px;font-weight:500;font-variant-numeric:tabular-nums}
+.kv span{font-size:12px;color:var(--muted)}
+.status{font-size:15px;line-height:1.4;color:var(--fg)}
+.intent{width:100%;background:transparent;border:0;border-bottom:1px dashed var(--line);padding:8px 0;font-size:17px;font-family:var(--f-display);font-weight:500}
+html[lang="bn"] .intent{font-family:var(--f-bn)}
+.intent:focus{outline:none;border-bottom-color:var(--accent)}
+.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.quick button{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 8px 12px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.quick button:hover{border-color:var(--accent)}
+.quick b{font-family:var(--f-mono);font-size:24px;font-weight:500}
+.quick span{font-size:12px;color:var(--muted)}
+.list{display:flex;flex-direction:column}
+.item{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.item:first-child{border-top:0}
+.thumb{width:44px;height:44px;border-radius:10px;overflow:hidden;flex:none;border:1px solid var(--line)}
+.thumb canvas{width:100%;height:100%;image-rendering:pixelated;display:block}
+.promo{display:flex;align-items:center;gap:14px;text-align:left;width:100%}
+.promo .thumb{width:56px;height:56px}
+
+/* focus setup */
+.dial{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 0}
+.dial .mins{font-family:var(--f-mono);font-size:64px;font-weight:300;line-height:1;font-variant-numeric:tabular-nums}
+.dial .unit{font-size:13px;color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--accent-fill);height:28px}
+.field{width:100%;min-height:46px;border-radius:12px;border:1px solid var(--line);background:var(--raised);padding:0 14px;font-size:15px}
+.field:focus{outline:none;border-color:var(--accent)}
+.grows{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.grows button{border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:8px;display:flex;flex-direction:column;gap:6px;align-items:center;font-size:13px;font-weight:600}
+.grows button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.grows canvas{width:100%;aspect-ratio:1;border-radius:10px;image-rendering:pixelated;display:block;max-width:100%}
+.routine{display:flex;flex-direction:column;gap:8px;padding:12px 0;border-top:1px solid var(--line)}
+.routine:first-of-type{border-top:0}
+.blocks{display:flex;gap:3px;height:10px}
+.blocks i{display:block;border-radius:3px;height:100%}
+.mixsum{display:flex;flex-wrap:wrap;gap:6px}
+
+/* overlays */
+.overlay{position:fixed;inset:0;z-index:50;background:var(--bg);overflow-y:auto;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.ov{max-width:440px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;gap:16px;padding-block:14px 24px}
+.stage{width:min(78vw,300px);max-width:100%;aspect-ratio:1;border-radius:26px;overflow:hidden;border:1px solid var(--line);margin:0 auto;background:#0d1210;position:relative}
+.stage canvas{width:100%;height:100%;image-rendering:pixelated;display:block}
+.countdown{font-family:var(--f-mono);font-size:72px;font-weight:300;line-height:1;text-align:center;letter-spacing:-2px;font-variant-numeric:tabular-nums slashed-zero}
+.sess-meta{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.vbar{height:6px;border-radius:3px;background:var(--raised);overflow:hidden;display:flex}
+.vbar i{display:block;height:100%}
+.controls{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:auto}
+.ctl{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:var(--muted);font-weight:600}
+.ctl .disc{width:56px;height:56px;border-radius:50%;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--fg)}
+.ctl.main .disc{background:var(--accent-fill);color:var(--on-accent);border-color:transparent}
+.ctl.arm .disc{border-color:var(--bad);color:var(--bad)}
+.ctl.arm{color:var(--bad)}
+.ctl svg{width:22px;height:22px}
+#session.deep .hide-deep{display:none}
+#session.deep{background:#000}
+#session.deep .countdown{font-size:min(26vw,140px);color:#E8E2CF;margin-top:auto}
+#session.deep .stage{opacity:.55;width:min(40vw,160px);border-color:#1a1a1a}
+#session.deep .deep-exit{display:block}
+.deep-exit{display:none;text-align:center;color:#6d695f;font-size:13px;margin-bottom:auto;padding:12px}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tile b{font-family:var(--f-mono);font-size:22px;font-weight:500;font-variant-numeric:tabular-nums}
+.tile span{font-size:12px;color:var(--muted)}
+.share{display:flex;justify-content:center}
+.share canvas{width:180px;height:320px;border-radius:14px;border:1px solid var(--line);max-width:100%}
+
+/* break */
+.breath{width:220px;height:220px;max-width:100%;margin:12px auto;position:relative;display:flex;align-items:center;justify-content:center}
+.breath .orb{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 40% 35%,color-mix(in srgb,var(--c1) 55%,transparent),color-mix(in srgb,var(--c1) 12%,transparent) 70%);animation:box 16s linear infinite;transform:scale(.55)}
+.breath .ring2{position:absolute;inset:0;border-radius:50%;border:1px dashed var(--line)}
+.breath b{position:relative;font-family:var(--f-display);font-size:22px}
+@keyframes box{0%{transform:scale(.55)}25%{transform:scale(1)}50%{transform:scale(1)}75%{transform:scale(.55)}100%{transform:scale(.55)}}
+
+/* sheet */
+.sheet-wrap{position:fixed;inset:0;z-index:70;background:var(--scrim);display:flex;align-items:flex-end;justify-content:center}
+.sheet{width:100%;max-width:440px;max-height:88vh;overflow-y:auto;background:var(--surface);border:1px solid var(--line);border-bottom:0;border-radius:22px 22px 0 0;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
+.grab{width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto}
+.snd{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center}
+.snd .ico{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--raised);display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.snd .ico[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.snd .ico svg{width:22px;height:22px}
+.snd .nm{display:flex;justify-content:space-between;font-size:14px;font-weight:600}
+.snd .nm small{font-weight:400;color:var(--muted);font-size:12px}
+.presets{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.presets .chip{flex:none}
+
+/* world */
+.seg{display:grid;grid-template-columns:repeat(3,1fr);background:var(--raised);border-radius:12px;padding:3px;border:1px solid var(--line)}
+.seg button{min-height:36px;border-radius:9px;font-size:14px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.pano{border-radius:18px;overflow:hidden;border:1px solid var(--line)}
+.pano canvas{width:100%;aspect-ratio:2/1;image-rendering:pixelated;display:block;max-width:100%}
+.coll{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.coll figure{margin:0;display:flex;flex-direction:column;gap:4px;min-width:0}
+.coll canvas{width:100%;aspect-ratio:1;border-radius:12px;border:1px solid var(--line);image-rendering:pixelated;display:block;max-width:100%}
+.coll figcaption{font-size:12px;line-height:1.3}
+.coll figcaption span{display:block;color:var(--muted);font-size:11px}
+
+/* stats */
+.chart{width:100%;overflow-x:auto}
+.chart svg{display:block;width:100%;height:auto}
+.chart text{fill:var(--muted);font-size:10px;font-family:var(--f-body)}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .bv{fill:var(--accent-fill)}
+.chart .bc{fill:var(--claimed)}
+.chart .now{fill:var(--accent)}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.hm rect{rx:3}
+.hm .h0{fill:var(--raised)}
+.hm .h1{fill:var(--accent-fill);fill-opacity:.25}
+.hm .h2{fill:var(--accent-fill);fill-opacity:.5}
+.hm .h3{fill:var(--accent-fill);fill-opacity:.75}
+.hm .h4{fill:var(--accent-fill)}
+.stack{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--raised)}
+.stack i{display:block;height:100%}
+.insight{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+.insight:first-child{border-top:0}
+.insight .n{font-family:var(--f-mono);color:var(--accent);font-size:13px;padding-top:1px}
+
+/* me */
+.level{display:grid;grid-template-columns:72px 1fr;gap:14px;align-items:center}
+.emblem{width:72px;height:72px;border-radius:20px;background:var(--raised);border:1px solid var(--line);overflow:hidden}
+.emblem canvas{width:100%;height:100%;image-rendering:pixelated;display:block}
+.xp{height:8px;border-radius:4px;background:var(--raised);overflow:hidden}
+.xp i{display:block;height:100%;background:var(--accent-fill);border-radius:4px}
+.unlocks{display:flex;flex-direction:column;gap:8px}
+.unlock{display:flex;gap:12px;align-items:center;font-size:14px}
+.unlock .thumb{width:40px;height:40px}
+.unlock.locked{opacity:.5}
+.badges{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.badge{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding:12px 6px;border-radius:14px;border:1px solid var(--line);background:var(--surface);min-width:0}
+.badge .b{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:13px;font-weight:500;border:2px solid var(--accent);color:var(--accent)}
+.badge.locked .b{border-color:var(--line);color:var(--muted);border-style:dashed}
+.badge.locked{opacity:.6}
+.badge small{font-size:11px;color:var(--muted);line-height:1.25}
+.badge strong{font-size:12px;line-height:1.2}
+.set{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.set:first-child{border-top:0}
+.set .grow small{display:block;color:var(--muted);font-size:12px}
+.switch{width:46px;height:28px;border-radius:14px;background:var(--raised);border:1px solid var(--line);position:relative;flex:none}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--muted);transition:transform .2s}
+.switch[aria-checked="true"]{background:var(--accent-fill);border-color:transparent}
+.switch[aria-checked="true"]::after{transform:translateX(18px);background:var(--on-accent)}
+
+/* review */
+#review{background:#0E0D0A;color:#F3EFE4}
+.rv-bars{display:flex;gap:4px;padding-top:6px}
+.rv-bars i{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.18);overflow:hidden;display:block}
+.rv-bars i b{display:block;height:100%;width:0;background:#F0C44A}
+.rv-slide{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;padding:12px 4px;cursor:pointer}
+.rv-slide .k{font-family:var(--f-display);font-size:56px;line-height:1;color:#F0C44A}
+html[lang="bn"] .rv-slide .k{font-family:var(--f-bn)}
+.rv-slide h2{font-size:26px;color:#F3EFE4}
+.rv-slide p{color:#B9B3A5;font-size:16px;max-width:34ch}
+.rv-slide canvas{width:100%;max-width:360px;aspect-ratio:2/1;image-rendering:pixelated;border-radius:14px;display:block}
+
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:90;background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;font-weight:500;max-width:min(400px,calc(100vw - 32px));box-shadow:0 8px 30px rgba(0,0,0,.3);text-align:center}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div id="app"><main id="view" class="view" aria-live="polite"></main></div>
+
+<nav class="tabbar" aria-label="Main">
+  <div class="in" id="tabs"></div>
+</nav>
+
+<section id="session" class="overlay" hidden></section>
+<section id="done" class="overlay" hidden></section>
+<section id="brk" class="overlay" hidden></section>
+<section id="review" class="overlay" hidden></section>
+<div id="sheet" hidden></div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+'use strict';
+/* ================= storage ================= */
+const store={
+  get(k,d){try{const v=localStorage.getItem('ffw.'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},
+  set(k,v){try{localStorage.setItem('ffw.'+k,JSON.stringify(v))}catch(e){}}
+};
+const DEF_SETTINGS={goal:120,lang:'en',strict:false,theme:'auto',mix:{rain:.55,fan:.25},master:.8,tree:'banyan',sky:'night'};
+const S={
+  sessions:store.get('sessions',null),
+  settings:Object.assign({},DEF_SETTINGS,store.get('settings',{})),
+  setup:Object.assign({min:25,cat:0,theme:'garden',label:''},store.get('setup',{})),
+  intention:store.get('intention',{day:0,text:''}),
+  world:'garden'
+};
+function save(){store.set('sessions',S.sessions);store.set('settings',S.settings);store.set('setup',S.setup);store.set('intention',S.intention)}
+
+/* ================= i18n ================= */
+const BN={
+ 'Today':'আজ','Focus':'ফোকাস','World':'বাগান','Stats':'হিসাব','Me':'আমি',
+ 'Good morning':'সুপ্রভাত','Good afternoon':'শুভ দুপুর','Good evening':'শুভ সন্ধ্যা','Late night':'গভীর রাত',
+ 'verified today':'আজ যাচাইকৃত','of':'এর মধ্যে','Day streak':'টানা দিন','Sessions':'সেশন','Focus score':'ফোকাস স্কোর','Away moments':'বাইরে যাওয়া',
+ 'One thing for today':'আজকের একটা কাজ','What would make today count?':'কী করলে আজকের দিনটা সার্থক?',
+ 'Quick start':'দ্রুত শুরু','min':'মিনিট','Custom':'নিজের মতো','Today so far':'আজ এ পর্যন্ত','Nothing yet. Your first block shows up here.':'এখনও কিছু নেই। প্রথম ব্লক এখানে দেখাবে।',
+ 'Your week in review':'তোমার সপ্তাহের হিসাব','Seven days, five cards. Tap through.':'সাত দিন, পাঁচটা কার্ড। ট্যাপ করে দেখো।',
+ 'Set up a block':'ব্লক সাজাও','minutes':'মিনিট','What are you working on?':'কী নিয়ে কাজ করছ?','e.g. Physics chapter 4':'যেমন: পদার্থবিজ্ঞান অধ্যায় ৪',
+ 'Type of work':'কাজের ধরন','Deep work':'গভীর কাজ','Active work':'সক্রিয় কাজ','Practice':'অনুশীলন','Routine':'রুটিন',
+ 'What grows':'কী বড় হবে','Garden':'বাগান','Tower':'দালান','Sky':'আকাশ','Sound':'শব্দ','Edit mix':'মিক্স বদলাও','Silent':'নিঃশব্দ',
+ 'Start focus':'ফোকাস শুরু','Routines':'রুটিন','Start routine':'রুটিন শুরু',
+ 'Verified':'যাচাইকৃত','Away':'বাইরে','Paused':'বিরতি','claimed':'দাবিকৃত','Pause':'থামাও','Resume':'চালাও','Sounds':'শব্দ','Deep mode':'গভীর মোড','Stop':'শেষ','Tap again':'আবার চাপো',
+ 'Tap anywhere to exit deep mode':'গভীর মোড থেকে বের হতে যেকোনো জায়গায় চাপো',
+ 'Block complete':'ব্লক সম্পূর্ণ','Stopped early':'আগেই থামানো হয়েছে','Start break':'বিরতি শুরু','Back to today':'আজকের পাতায় ফেরো','Copy summary':'সারাংশ কপি','Next block':'পরের ব্লক',
+ 'Break':'বিরতি','Inhale':'শ্বাস নাও','Hold':'ধরে রাখো','Exhale':'শ্বাস ছাড়ো','Skip break':'বিরতি বাদ','Sound mix':'শব্দ মিক্স','Done':'ঠিক আছে','Master volume':'মূল ভলিউম','Presets':'প্রিসেট',
+ 'Rain':'বৃষ্টি','Tin roof':'টিনের চাল','Ceiling fan':'সিলিং ফ্যান','Brown noise':'ব্রাউন নয়েজ','Wind':'বাতাস','Campfire':'আগুন','Waves':'ঢেউ','Night crickets':'ঝিঁঝিঁ পোকা','Clock':'ঘড়ি','Alpha beats':'আলফা বিটস',
+ 'This week':'এই সপ্তাহ','Verified vs claimed':'যাচাইকৃত বনাম দাবিকৃত','Last 16 weeks':'গত ১৬ সপ্তাহ','When you focus':'কখন ফোকাস করো','By type of work':'কাজের ধরন অনুযায়ী','What the numbers say':'হিসাব যা বলছে','Open weekly review':'সাপ্তাহিক হিসাব খোলো',
+ 'Best hour':'সেরা সময়','Avg block':'গড় ব্লক',
+ 'Level':'লেভেল','Unlocks':'আনলক','Achievements':'অর্জন','Settings':'সেটিংস','Daily goal':'দৈনিক লক্ষ্য','Language':'ভাষা','Pause when I leave':'বের হলে থামাও','Appearance':'চেহারা','Auto':'অটো','Dark':'ডার্ক','Light':'লাইট',
+ 'Clear sample history':'নমুনা ইতিহাস মুছো','Copy backup':'ব্যাকআপ কপি','Erase everything':'সব মুছে ফেলো','Tap again to erase':'মুছতে আবার চাপো',
+ 'Sample history':'নমুনা ইতিহাস','Clear':'মুছো','Plants':'গাছ','Towers':'দালান','Constellations':'নক্ষত্রমণ্ডল','Nothing grown here yet.':'এখানে এখনও কিছু জন্মায়নি।',
+ 'Welcome back':'ফিরে আসার জন্য ধন্যবাদ','not counted as verified':'যাচাইকৃত হিসেবে গোনা হয়নি','Block':'ব্লক','Copied':'কপি হয়েছে',
+};
+const BN_DIG='০১২৩৪৫৬৭৮৯';
+const L=()=>S.settings.lang;
+const t=s=>L()==='bn'&&BN[s]?BN[s]:s;
+const nn=x=>L()==='bn'?String(x).replace(/[0-9]/g,d=>BN_DIG[d]):String(x);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function fmtDur(sec){const m=Math.round(sec/60),h=Math.floor(m/60),r=m%60;if(L()==='bn')return nn(h?`${h}ঘ ${r}মি`:`${r}মি`);return h?`${h}h ${String(r).padStart(2,'0')}m`:`${r}m`}
+function fmtClock(sec){sec=Math.max(0,Math.ceil(sec));const m=Math.floor(sec/60),s=sec%60;return nn(String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'))}
+function fmtHour(h){if(L()==='bn')return nn((h%12||12)+'টা');return (h%12||12)+(h<12?' AM':' PM')}
+const DAYS_EN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],DAYS_BN=['রবি','সোম','মঙ্গল','বুধ','বৃহ','শুক্র','শনি'];
+const DAYS_FULL=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],DAYS_FULL_BN=['রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার','শনিবার'];
+const dname=i=>L()==='bn'?DAYS_BN[i]:DAYS_EN[i];
+const dfull=i=>L()==='bn'?DAYS_FULL_BN[i]:DAYS_FULL[i];
+function fmtDate(ts){const d=new Date(ts);return L()==='bn'?nn(d.getDate())+' '+['জানু','ফেব্রু','মার্চ','এপ্রি','মে','জুন','জুলা','আগ','সেপ্টে','অক্টো','নভে','ডিসে'][d.getMonth()]:d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})}
+
+/* ================= time helpers ================= */
+function dayStart(ts){const x=new Date(ts);x.setHours(0,0,0,0);return x.getTime()}
+function addDays(ts,k){const x=new Date(ts);x.setDate(x.getDate()+k);x.setHours(0,0,0,0);return x.getTime()}
+const sessOn=day=>S.sessions.filter(s=>dayStart(s.start)===day);
+const sumV=list=>list.reduce((a,s)=>a+s.verified,0);
+const sumC=list=>list.reduce((a,s)=>a+s.claimed,0);
+const real=()=>S.sessions.filter(s=>!s.sample);
+function streak(){let d=dayStart(Date.now());if(sumV(sessOn(d))<600)d=addDays(d,-1);let n=0;while(sumV(sessOn(d))>=600){n++;d=addDays(d,-1)}return n}
+
+/* ================= rng / colour ================= */
+function mkRng(seed){let a=seed>>>0;return()=>{a=a+0x6D2B79F5|0;let x=Math.imul(a^a>>>15,1|a);x=x+Math.imul(x^x>>>7,61|x)^x;return((x^x>>>14)>>>0)/4294967296}}
+function hx(c){c=c.replace('#','');return[parseInt(c.slice(0,2),16),parseInt(c.slice(2,4),16),parseInt(c.slice(4,6),16)]}
+function mix(a,b,k){const A=hx(a),B=hx(b);return'rgb('+A.map((v,i)=>Math.round(v+(B[i]-v)*k)).join(',')+')'}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const ease=p=>1-(1-p)*(1-p);
+
+/* ================= catalogue ================= */
+const CATS=[{n:'Deep work',v:'--c0'},{n:'Active work',v:'--c1'},{n:'Practice',v:'--c2'},{n:'Routine',v:'--c3'}];
+function species(min){return min<20?'Tulsi':min<35?'Fern':min<60?'Sunflower':'TREE'}
+const TREES={banyan:{n:'Banyan',bn:'বটগাছ',lv:1},krishnachura:{n:'Krishnachura',bn:'কৃষ্ণচূড়া',lv:2},sonalu:{n:'Sonalu',bn:'সোনালু',lv:3}};
+const SPN={Tulsi:'তুলসী',Fern:'ফার্ন',Sunflower:'সূর্যমুখী'};
+function itemName(s){
+  if(s.theme==='garden'){const sp=species(s.planned);if(sp==='TREE'){const tr=TREES[s.tree||'banyan'];return L()==='bn'?tr.bn:tr.n}return L()==='bn'?SPN[sp]:sp}
+  if(s.theme==='city'){const f=floors(s.planned);return L()==='bn'?nn(f)+' তলা দালান':f+'-floor tower'}
+  return constName(s.seed);
+}
+const floors=min=>clamp(Math.round(min/5),3,18);
+function constName(seed){const r=mkRng(seed^0x51);const a=['Quiet','Patient','Long','Steady','Bright','Slow','Brave'],b=['Owl','Kite','Boat','Lantern','Heron','River','Tiger','Lotus'];
+  const ab=['শান্ত','ধৈর্যশীল','দীর্ঘ','স্থির','উজ্জ্বল','ধীর','সাহসী'],bb=['পেঁচা','ঘুড়ি','নৌকা','লণ্ঠন','বক','নদী','বাঘ','পদ্ম'];
+  const i=Math.floor(r()*a.length),j=Math.floor(r()*b.length);return L()==='bn'?ab[i]+' '+bb[j]:'The '+a[i]+' '+b[j]}
+
+/* ================= sample history ================= */
+function makeSample(){
+  const r=mkRng(20261117),out=[],today=dayStart(Date.now());
+  const durs=[25,25,50,45,60,90,15,25,50],hours=[9,10,10,11,15,16,20,21,22,8];
+  for(let d=27;d>=1;d--){
+    if(r()<.18)continue;
+    const day=addDays(today,-d),n=1+Math.floor(r()*3);
+    let hour=hours[Math.floor(r()*hours.length)];
+    for(let k=0;k<n;k++){
+      const planned=durs[Math.floor(r()*durs.length)],done=r()<.86;
+      const claimed=done?planned*60:Math.round(planned*60*(.3+r()*.5));
+      const ratio=planned>=90?.72+r()*.2:.82+r()*.17;
+      const theme=['garden','garden','city','sky'][Math.floor(r()*4)];
+      out.push({id:'s'+day+k,start:day+hour*3600000+Math.floor(r()*40)*60000,planned,claimed,verified:Math.round(claimed*ratio),
+        cat:Math.floor(r()*4),theme,done,dist:Math.floor(r()*(planned>45?4:2)),label:'',seed:Math.floor(r()*1e9),tree:'banyan',sample:true});
+      hour=Math.min(23,hour+1+Math.floor(planned/60));
+    }
+  }
+  return out;
+}
+if(!Array.isArray(S.sessions)){S.sessions=makeSample();save()}
+
+/* ================= pixel scenes (96x96) ================= */
+function P(ctx){return{
+  r(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))},
+  disc(cx,cy,r,c){ctx.fillStyle=c;r=Math.round(r);for(let y=-r;y<=r;y++){const w=Math.floor(Math.sqrt(r*r-y*y));ctx.fillRect(Math.round(cx-w),Math.round(cy+y),w*2+1,1)}},
+  line(x0,y0,x1,y1,c){ctx.fillStyle=c;x0|=0;y0|=0;x1|=0;y1|=0;const dx=Math.abs(x1-x0),dy=-Math.abs(y1-y0),sx=x0<x1?1:-1,sy=y0<y1?1:-1;let e=dx+dy;for(let i=0;i<300;i++){ctx.fillRect(x0,y0,1,1);if(x0===x1&&y0===y1)break;const e2=2*e;if(e2>=dy){e+=dy;x0+=sx}if(e2<=dx){e+=dx;y0+=sy}}}
+}}
+function drawBg(ctx,g,s){
+  const gr=ctx.createLinearGradient(0,0,0,96);
+  if(s.theme==='garden'){
+    gr.addColorStop(0,'#17221d');gr.addColorStop(1,'#26372c');ctx.fillStyle=gr;ctx.fillRect(0,0,96,96);
+    g.r(8,10,30,28,'#2b4655');g.r(8,10,30,1,'#3b5d6e');g.r(22,10,2,28,'#17221d');g.r(8,23,30,2,'#17221d');
+    g.r(9,11,6,4,'#3f6577');
+    g.r(0,93,96,3,'#4a3424');g.r(0,92,96,1,'#6a4c34');
+  }else if(s.theme==='city'){
+    gr.addColorStop(0,'#0a0f21');gr.addColorStop(1,'#1f2a4e');ctx.fillStyle=gr;ctx.fillRect(0,0,96,96);
+    g.disc(78,16,5,'#efe8cf');g.disc(80,14,5,'#0d1328');
+    const r=mkRng(s.seed^77);let x=0;while(x<96){const w=5+Math.floor(r()*8),h=8+Math.floor(r()*22);g.r(x,88-h,w,h,'#18213f');x+=w+1}
+    g.r(0,88,96,8,'#111626');for(let i=0;i<96;i+=8)g.r(i+2,92,4,1,'#2d3555');
+  }else{
+    gr.addColorStop(0,'#03050c');gr.addColorStop(1,'#0e1636');ctx.fillStyle=gr;ctx.fillRect(0,0,96,96);
+    if(s.aurora){for(let x=0;x<96;x++){const y=22+Math.sin(x/11+s.seed%7)*6;for(let k=0;k<14;k++){ctx.fillStyle='rgba(80,230,160,'+(0.16*(1-k/14))+')';ctx.fillRect(x,y+k,1,1)}}}
+    const r=mkRng(s.seed^99);for(let i=0;i<45;i++){ctx.fillStyle='rgba(255,255,255,'+(.15+r()*.3)+')';ctx.fillRect(Math.floor(r()*96),Math.floor(r()*80),1,1)}
+    for(let x=0;x<96;x++){const y=Math.round(86+Math.sin(x/9+s.seed%5)*3);g.r(x,y,1,96-y,'#060912')}
+  }
+}
+function drawPlant(g,s,p){
+  const v=s.vigor==null?1:s.vigor;
+  const leaf=mix('#8a8a52','#4cc85a',v),leafD=mix('#62623c','#2f9a44',v),stem=mix('#6c7040','#3a9a46',v);
+  for(let y=83;y<=93;y++){const ins=Math.floor((y-83)/4);g.r(38+ins,y,20-2*ins,1,'#b5562f');g.r(39+ins,y,1,1,'#d27a4a')}
+  g.r(36,80,24,3,'#c9733f');g.r(36,80,24,1,'#e08a55');g.r(38,79,20,1,'#3b2a1f');
+  if(p<.04){g.r(47,77,2,2,'#8a5a2b');return}
+  const e=ease(p),sp=species(s.planned),r=mkRng(s.seed);
+  if(sp==='Tulsi'){
+    const h=Math.round(4+22*e);g.r(48,79-h,1,h,stem);
+    for(let k=1;k*4<h;k++){const y=79-k*4,sz=k*4>h-6?2:3;g.r(48-sz,y,sz,2,leaf);g.r(49,y,sz,2,leafD)}
+    if(p>.8){const top=79-h;for(let i=0;i<5;i++){g.r(48,top-1-i,1,1,i%2?'#a77ad8':'#7d58b0')}g.r(46,top+1,1,2,'#9b6bd0');g.r(50,top+1,1,2,'#9b6bd0')}
+  }else if(sp==='Fern'){
+    const angs=[-62,-34,-8,18,44,68],lens=angs.map(()=>16+r()*14);
+    angs.forEach((a,i)=>{const L=lens[i]*e,rad=a*Math.PI/180;for(let st=0;st<L;st++){
+      const x=48+Math.sin(rad)*st,y=79-Math.cos(rad)*st+st*st*.014*Math.abs(Math.sin(rad)+.3);g.r(x,y,1,1,stem);
+      if(st%2===0&&st>2){const lf=Math.max(1,Math.round((L-st)/5));const px=Math.cos(rad),py=Math.sin(rad);
+        for(let q=1;q<=lf;q++){g.r(x+px*q,y+py*q,1,1,leaf);g.r(x-px*q,y-py*q,1,1,leafD)}}}});
+  }else if(sp==='Sunflower'){
+    const h=Math.round(6+42*e),top=79-h;g.r(47,top,2,h,stem);
+    [[.3,-1],[.5,1],[.7,-1]].forEach(([f,d])=>{if(h*f>6){const y=79-h*f;g.disc(48+d*5,y,Math.min(3,1+h/16),leaf);g.r(48+d*2,y,d>0?3:-3,1,leafD)}});
+    if(p>.62){const rr=Math.round(2+6*clamp((p-.62)/.38,0,1));g.disc(48,top,rr+2,mix('#a8922a','#f5c518',v));g.disc(48,top,Math.max(1,Math.round(rr*.6)),'#5b3a1a')}
+    else{g.disc(48,top,2,leafD)}
+  }else{
+    const tr=s.tree||'banyan',w=2+Math.round(4*e),h=Math.round(10+34*e),top=79-h;
+    const blobs=[];for(let i=0;i<18;i++)blobs.push([48+(r()-.5)*44,(r()-.65)*16,4+r()*5,r()]);
+    const roots=[];for(let i=0;i<6;i++)roots.push([30+r()*36,r()]);
+    g.r(48-w/2,top,w,h,'#6b4a2b');g.r(48-w/2,top,1,h,'#87603a');
+    if(e>.3){g.line(48,top+8,40,top+2,'#6b4a2b');g.line(48,top+6,57,top,'#6b4a2b')}
+    const n=Math.round(3+15*e);
+    const base=tr==='krishnachura'?['#2f7a3a','#3f9a46']:tr==='sonalu'?['#5c8a35','#7aa844']:[mix('#5f6a3a','#2c7a3a',v),mix('#7a8448','#3e9a48',v)];
+    for(let i=0;i<n;i++){const b=blobs[i];const rr=b[2]*(.5+.5*e);g.disc(b[0],top+b[1],rr,base[0]);g.disc(b[0]-1,top+b[1]-1,Math.max(1,rr-1.5),base[1])}
+    if(tr==='krishnachura'&&p>.55){const k=mkRng(s.seed^5);for(let i=0;i<Math.round(60*(p-.55)/.45);i++){const b=blobs[Math.floor(k()*n)];g.r(b[0]+(k()-.5)*b[2]*1.8,top+b[1]+(k()-.5)*b[2]*1.6,1+(k()<.3),1,k()<.5?'#e8452c':'#ff7a3a')}}
+    if(tr==='sonalu'&&p>.55){const k=mkRng(s.seed^7);const cnt=Math.round(14*(p-.55)/.45);for(let i=0;i<cnt;i++){const b=blobs[Math.floor(k()*n)];const x=b[0]+(k()-.5)*b[2]*1.6,y=top+b[1]+b[2]*.6,len=3+Math.floor(k()*6);for(let j=0;j<len;j++)g.r(x+(j%2),y+j,1,1,j%2?'#ffd54a':'#f2b81c')}}
+    if(tr==='banyan'&&p>.75){const f=(p-.75)/.25;roots.forEach(([x,q])=>{const L=Math.round((6+q*16)*f);g.r(x,top+6,1,L,'#7a5a3a')})}
+  }
+}
+function drawTower(g,s,p,now,ground){
+  const v=s.vigor==null?1:s.vigor,N=floors(s.planned),fh=clamp(Math.floor(66/N),3,6),bw=26+(s.seed%3)*4,x0=Math.round(48-bw/2);
+  const r=mkRng(s.seed),cols=Math.floor((bw-4)/4),lit=[];for(let i=0;i<N*cols;i++)lit.push(r());
+  const built=Math.floor(p*N+1e-6),body=['#2a3042','#33293f','#25343a'][s.seed%3];
+  if(ground===false){}
+  for(let i=0;i<built;i++){const y=88-(i+1)*fh;g.r(x0,y,bw,fh,body);g.r(x0,y,bw,1,'#3d4560');
+    for(let c=0;c<cols;c++){const on=lit[i*cols+c]<(.2+.6*v);g.r(x0+2+c*4,y+2,2,Math.max(1,fh-3),on?'#ffde7a':'#161a24')}}
+  const topY=88-built*fh;
+  if(p<1){const frac=p*N-built,y=topY-fh;
+    g.r(x0,y,1,fh,'#c99a3a');g.r(x0+bw-1,y,1,fh,'#c99a3a');g.r(x0,y,Math.round(bw*frac),1,'#c99a3a');
+    const mx=x0+bw+4,mt=Math.max(4,topY-16);g.r(mx,mt,2,88-mt,'#e0a63a');g.r(mx-30,mt,34,2,'#e0a63a');g.r(mx+2,mt-3,1,3,'#e0a63a');
+    const hx=mx-14-Math.round(10*Math.sin(now/1600));g.r(hx,mt+2,1,Math.max(2,y-mt-2),'#8a7448');g.r(hx-1,y-1,3,2,'#e0a63a');
+  }else{g.r(x0+bw/2-1,topY-9,2,9,'#3d4560');if(Math.floor(now/600)%2===0)g.r(x0+bw/2-1,topY-11,2,2,'#ff4b4b')}
+}
+function drawSky(ctx,g,s,p,now){
+  const v=s.vigor==null?1:s.vigor,r=mkRng(s.seed),n=clamp(Math.round(s.planned/3),5,30),pts=[];
+  for(let i=0;i<n;i++)pts.push([12+Math.floor(r()*72),10+Math.floor(r()*64),r()]);
+  const order=[0],used=new Set([0]);while(order.length<n){const a=pts[order[order.length-1]];let best=-1,bd=1e9;pts.forEach((q,i)=>{if(used.has(i))return;const d=(q[0]-a[0])**2+(q[1]-a[1])**2;if(d<bd){bd=d;best=i}});used.add(best);order.push(best)}
+  const shown=p<=0?0:Math.max(1,Math.floor(p*n+1e-6));
+  for(let k=1;k<shown;k++){const a=pts[order[k-1]],b=pts[order[k]];g.line(a[0],a[1],b[0],b[1],'rgba(240,196,74,'+(p>=1?.6:.35)+')')}
+  for(let k=0;k<shown;k++){const q=pts[order[k]],tw=.72+.28*Math.sin(now/420+k*1.7),a=(.45+.55*v)*tw;
+    ctx.fillStyle='rgba(255,246,213,'+a+')';ctx.fillRect(q[0],q[1],1,1);
+    if(q[2]>.55){ctx.fillStyle='rgba(255,246,213,'+a*.5+')';ctx.fillRect(q[0]-1,q[1],1,1);ctx.fillRect(q[0]+1,q[1],1,1);ctx.fillRect(q[0],q[1]-1,1,1);ctx.fillRect(q[0],q[1]+1,1,1)}}
+  if(shown<n&&p>0){const q=pts[order[shown]],a=.15+.15*Math.sin(now/200);ctx.fillStyle='rgba(240,196,74,'+a+')';ctx.fillRect(q[0]-1,q[1]-1,3,3)}
+}
+function drawScene(cv,s,p,opt){
+  opt=opt||{};const ctx=cv.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,96,96);
+  const g=P(ctx),now=opt.now||0;
+  if(opt.bg!==false)drawBg(ctx,g,s);
+  if(s.theme==='garden')drawPlant(g,s,p);else if(s.theme==='city')drawTower(g,s,p,now);else drawSky(ctx,g,s,p,now);
+}
+function mkCanvas(w,h){const c=document.createElement('canvas');c.width=w||96;c.height=h||96;return c}
+function sceneFor(sess){return{theme:sess.theme,planned:sess.planned,seed:sess.seed,vigor:sess.claimed?sess.verified/sess.claimed:1,tree:sess.tree,aurora:sess.aurora}}
+function progressOf(sess){return sess.done?1:clamp(sess.claimed/(sess.planned*60),0,1)}
+
+/* ================= audio engine ================= */
+const SOUNDS=[
+ {id:'rain',n:'Rain',d:'Steady, close',ico:'rain'},{id:'tin',n:'Tin roof',d:'Monsoon on corrugated tin',ico:'roof'},
+ {id:'fan',n:'Ceiling fan',d:'Low whoosh and hum',ico:'fan'},{id:'brown',n:'Brown noise',d:'Deep, soft',ico:'wave'},
+ {id:'wind',n:'Wind',d:'Slow gusts',ico:'wind'},{id:'fire',n:'Campfire',d:'Crackle and roar',ico:'fire'},
+ {id:'waves',n:'Waves',d:'Shore, slow swell',ico:'waves'},{id:'crickets',n:'Night crickets',d:'Village night',ico:'moon'},
+ {id:'tick',n:'Clock',d:'One tick per second',ico:'clock'},{id:'alpha',n:'Alpha beats',d:'10 Hz, needs headphones',ico:'head'}
+];
+const PRESETS=[
+ {n:'Monsoon desk',bn:'বর্ষার টেবিল',mix:{rain:.6,fan:.25,brown:.15}},
+ {n:'Tin roof night',bn:'টিনের চালে রাত',mix:{tin:.6,rain:.25,crickets:.3}},
+ {n:'Hostel room',bn:'হোস্টেলের রুম',mix:{fan:.55,tick:.2,brown:.2}},
+ {n:'Campfire',bn:'ক্যাম্পফায়ার',mix:{fire:.65,crickets:.25,wind:.2}},
+ {n:'Deep space',bn:'মহাকাশ',mix:{brown:.5,alpha:.35}},
+ {n:'Shore',bn:'সমুদ্রতীর',mix:{waves:.7,wind:.2}}
+];
+const AU={
+  ctx:null,out:null,duck:null,buf:{},live:{},
+  init(){if(this.ctx)return true;const C=window.AudioContext||window.webkitAudioContext;if(!C)return false;
+    try{this.ctx=new C()}catch(e){return false}
+    this.out=this.ctx.createGain();this.out.gain.value=S.settings.master;this.duck=this.ctx.createGain();this.duck.gain.value=1;
+    this.out.connect(this.duck);this.duck.connect(this.ctx.destination);
+    const sr=this.ctx.sampleRate,len=sr*6;['white','pink','brown'].forEach(k=>this.buf[k]=this.ctx.createBuffer(1,len,sr));
+    const w=this.buf.white.getChannelData(0),pk=this.buf.pink.getChannelData(0),br=this.buf.brown.getChannelData(0);
+    let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0,last=0;
+    for(let i=0;i<len;i++){const x=Math.random()*2-1;w[i]=x;
+      b0=.99886*b0+x*.0555179;b1=.99332*b1+x*.0750759;b2=.969*b2+x*.153852;b3=.8665*b3+x*.3104856;b4=.55*b4+x*.5329522;b5=-.7616*b5-x*.016898;
+      pk[i]=(b0+b1+b2+b3+b4+b5+b6+x*.5362)*.11;b6=x*.115926;last=(last+.02*x)/1.02;br[i]=last*3.5}
+    // crossfade loop seam
+    const f=Math.floor(sr*.05);['white','pink','brown'].forEach(k=>{const d=this.buf[k].getChannelData(0);for(let i=0;i<f;i++){const a=i/f;d[len-f+i]=d[len-f+i]*(1-a)+d[i]*a}});
+    return true},
+  resume(){if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume()},
+  noise(k){const s=this.ctx.createBufferSource();s.buffer=this.buf[k];s.loop=true;s.loopStart=0;s.start(0,Math.random()*5);return s},
+  filt(type,f,q){const b=this.ctx.createBiquadFilter();b.type=type;b.frequency.value=f;if(q)b.Q.value=q;return b},
+  gain(v){const g=this.ctx.createGain();g.gain.value=v;return g},
+  lfo(rate,depth,target){const o=this.ctx.createOscillator();o.frequency.value=rate;const g=this.gain(depth);o.connect(g);g.connect(target);o.start();return o},
+  burst(t,dest,dur,freq,q,amp){const c=this.ctx,s=c.createBufferSource();s.buffer=this.buf.white;const b=this.filt('bandpass',freq,q),g=this.gain(0);
+    s.connect(b);b.connect(g);g.connect(dest);g.gain.setValueAtTime(amp,t);g.gain.exponentialRampToValueAtTime(.0001,t+dur);s.start(t,Math.random()*5);s.stop(t+dur+.02)},
+  ping(t,dest,freq,dur,amp,type){const c=this.ctx,o=c.createOscillator(),g=this.gain(0);o.type=type||'sine';o.frequency.value=freq;o.connect(g);g.connect(dest);
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(amp,t+.004);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.start(t);o.stop(t+dur+.02)},
+  sched(rate,fn,fixed){const self=this;let next=this.ctx.currentTime+.05;const tick=()=>{const c=self.ctx;if(next<c.currentTime)next=c.currentTime+.02;while(next<c.currentTime+1.6){fn(next);next+=fixed?1/rate:-Math.log(1-Math.random())/rate}};tick();return setInterval(tick,250)},
+  build(id,dest){
+    const c=this.ctx,stops=[],timers=[];const add=n=>{stops.push(n);return n};
+    if(id==='rain'){const n=add(this.noise('pink')),h=this.filt('highpass',450),l=this.filt('lowpass',7500),g=this.gain(1.1);n.connect(h);h.connect(l);l.connect(g);g.connect(dest);
+      const n2=add(this.noise('brown')),l2=this.filt('lowpass',260),g2=this.gain(.35);n2.connect(l2);l2.connect(g2);g2.connect(dest);
+      timers.push(this.sched(28,t=>this.burst(t,dest,.02+Math.random()*.03,1800+Math.random()*3500,1.2,.05+Math.random()*.08)))}
+    if(id==='tin'){const n=add(this.noise('pink')),h=this.filt('highpass',1200),g=this.gain(.35);n.connect(h);h.connect(g);g.connect(dest);
+      timers.push(this.sched(16,t=>{const r=Math.random();if(r<.82)this.ping(t,dest,2200+Math.random()*2600,.05+Math.random()*.08,.05+Math.random()*.05,'triangle');else this.ping(t,dest,520+Math.random()*380,.18,.08,'sine')}))}
+    if(id==='fan'){const n=add(this.noise('brown')),b=this.filt('bandpass',320,.6),g=this.gain(1.4);n.connect(b);b.connect(g);g.connect(dest);stops.push(this.lfo(3.6,.35,g.gain));
+      const o=c.createOscillator();o.frequency.value=100;const og=this.gain(.025);o.connect(og);og.connect(dest);o.start();add(o)}
+    if(id==='brown'){const n=add(this.noise('brown')),l=this.filt('lowpass',900),g=this.gain(1.2);n.connect(l);l.connect(g);g.connect(dest)}
+    if(id==='wind'){const n=add(this.noise('white')),b=this.filt('bandpass',520,.9),g=this.gain(.5);n.connect(b);b.connect(g);g.connect(dest);stops.push(this.lfo(.07,280,b.frequency));stops.push(this.lfo(.11,.3,g.gain))}
+    if(id==='fire'){const n=add(this.noise('brown')),l=this.filt('lowpass',380),g=this.gain(1.1);n.connect(l);l.connect(g);g.connect(dest);stops.push(this.lfo(.3,.25,g.gain));
+      timers.push(this.sched(7,t=>this.burst(t,dest,.006+Math.random()*.02,2500+Math.random()*4000,.8,.08+Math.random()*.25)));
+      timers.push(this.sched(.6,t=>this.burst(t,dest,.05,900,1,.3)))}
+    if(id==='waves'){const n=add(this.noise('pink')),l=this.filt('lowpass',1100),g=this.gain(.55);n.connect(l);l.connect(g);g.connect(dest);stops.push(this.lfo(.085,.45,g.gain));stops.push(this.lfo(.085,500,l.frequency))}
+    if(id==='crickets'){const n=add(this.noise('pink')),l=this.filt('lowpass',500),g=this.gain(.15);n.connect(l);l.connect(g);g.connect(dest);
+      timers.push(this.sched(1.4,t=>{const f=4300+Math.random()*600,k=3+Math.floor(Math.random()*2),pan=c.createStereoPanner?c.createStereoPanner():null;let d=dest;if(pan){pan.pan.value=Math.random()*1.6-.8;pan.connect(dest);d=pan}
+        for(let i=0;i<k;i++)this.ping(t+i*.045,d,f,.025,.035)}))}
+    if(id==='tick'){let alt=0;timers.push(this.sched(1,t=>{alt^=1;this.burst(t,dest,.012,alt?3200:2600,6,.5)},true))}
+    if(id==='alpha'){const mk=(f,p)=>{const o=c.createOscillator();o.frequency.value=f;const g=this.gain(.12);o.connect(g);if(c.createStereoPanner){const pn=c.createStereoPanner();pn.pan.value=p;g.connect(pn);pn.connect(dest)}else g.connect(dest);o.start();add(o)};mk(200,-1);mk(210,1)}
+    return()=>{stops.forEach(s=>{try{s.stop()}catch(e){}});timers.forEach(clearInterval)}},
+  set(id,vol){if(!this.init())return;this.resume();const c=this.ctx;let L=this.live[id];
+    if(vol>0&&!L){const g=this.gain(0);g.connect(this.out);L=this.live[id]={g,stop:this.build(id,g)};}
+    if(!L)return;L.g.gain.setTargetAtTime(vol*vol,c.currentTime,.25);
+    if(vol<=0){const st=L.stop,g=L.g;delete this.live[id];setTimeout(()=>{st();g.disconnect()},1500)}},
+  apply(mix){Object.keys(this.live).forEach(id=>{if(!(mix[id]>0))this.set(id,0)});Object.entries(mix).forEach(([id,v])=>{if(v>0)this.set(id,v)})},
+  stopAll(){Object.keys(this.live).forEach(id=>this.set(id,0))},
+  fade(to,sec){if(!this.ctx)return;const g=this.duck.gain,c=this.ctx;g.cancelScheduledValues(c.currentTime);g.setValueAtTime(g.value,c.currentTime);g.linearRampToValueAtTime(to,c.currentTime+sec)},
+  master(v){if(this.ctx)this.out.gain.setTargetAtTime(v,this.ctx.currentTime,.1)},
+  chime(kind){if(!this.init())return;this.resume();const c=this.ctx,t=c.currentTime+.02,d=this.gain(.9);d.connect(this.ctx.destination);
+    const notes=kind==='start'?[[523.25,0],[783.99,.14]]:[[659.25,0],[880,.18],[1318.5,.36]];
+    notes.forEach(([f,o])=>{this.ping(t+o,d,f,1.6,.22);this.ping(t+o,d,f*2,.8,.05)})}
+};
+function mixActive(){return Object.entries(S.settings.mix).filter(([k,v])=>v>0)}
+
+/* ================= icons ================= */
+const IC={
+ today:'<path d="M4 7h16v13H4z M8 3v4 M16 3v4 M4 11h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>',
+ focus:'<circle cx="12" cy="13" r="8" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 9v4l3 2 M9 2h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+ world:'<path d="M12 21v-7 M12 14c-5 0-7-3-7-7 4 0 7 2 7 7z M12 12c0-4 3-7 7-7 0 4-2 7-7 7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6 21h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+ stats:'<path d="M5 20V11 M12 20V5 M19 20v-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
+ me:'<circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+ pause:'<path d="M8 5v14 M16 5v14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>',
+ play:'<path d="M7 5l12 7-12 7z" fill="currentColor"/>',
+ note:'<path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="7" cy="18" r="2.5" fill="currentColor"/><circle cx="17" cy="16" r="2.5" fill="currentColor"/>',
+ moonc:'<path d="M20 14A8 8 0 1 1 10 4a6 6 0 0 0 10 10z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>',
+ stop:'<rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/>',
+ rain:'<path d="M7 15a4 4 0 0 1 1-8 5 5 0 0 1 9 1 3.5 3.5 0 0 1 0 7z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M9 18l-1 3 M13 18l-1 3 M17 18l-1 3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+ roof:'<path d="M3 11l9-6 9 6 M5 10v9h14v-9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8 6v-3 M12 3v-1 M16 6v-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+ fan:'<circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 10c-1-5 3-7 5-5 M14 12c5-1 7 3 5 5 M12 14c1 5-3 7-5 5 M10 12c-5 1-7-3-5-5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+ wave:'<path d="M3 12c2-4 4-4 6 0s4 4 6 0 4-4 6 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+ wind:'<path d="M3 9h11a3 3 0 1 0-3-3 M3 15h15a3 3 0 1 1-3 3 M3 12h8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+ fire:'<path d="M12 21c-4 0-6-3-6-6 0-4 4-6 4-10 3 2 4 4 4 6 1-1 2-2 2-3 2 2 2 4 2 7 0 3-2 6-6 6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>',
+ waves:'<path d="M3 9c2-2 4-2 6 0s4 2 6 0 4-2 6 0 M3 15c2-2 4-2 6 0s4 2 6 0 4-2 6 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+ moon:'<path d="M19 14A7 7 0 1 1 10 5a5.5 5.5 0 0 0 9 9z" fill="none" stroke="currentColor" stroke-width="1.7"/>',
+ clock:'<circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 8v4l2.5 2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+ head:'<path d="M4 15v-3a8 8 0 0 1 16 0v3" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="3" y="14" width="4" height="6" rx="1.5" fill="currentColor"/><rect x="17" y="14" width="4" height="6" rx="1.5" fill="currentColor"/>'
+};
+const svg=(k,cls)=>`<svg viewBox="0 0 24 24" aria-hidden="true"${cls?` class="${cls}"`:''}>${IC[k]}</svg>`;
+
+/* ================= routing ================= */
+const ROUTES=['today','focus','world','stats','me'];
+function route(){const h=location.hash.replace('#','');return ROUTES.includes(h)?h:'today'}
+function renderTabs(){const r=route();document.getElementById('tabs').innerHTML=ROUTES.map(k=>`<a class="tab" href="#${k}" ${k===r?'aria-current="page"':''} style="text-decoration:none">${svg(k)}<span>${t(k==='today'?'Today':k==='focus'?'Focus':k==='world'?'World':k==='stats'?'Stats':'Me')}</span></a>`).join('')}
+function render(){document.documentElement.lang=L();renderTabs();const v=document.getElementById('view');const r=route();
+  v.innerHTML=({today:vToday,focus:vFocus,world:vWorld,stats:vStats,me:vMe})[r]();
+  document.querySelectorAll('canvas[data-sess]').forEach(cv=>{const s=S.sessions.find(x=>x.id===cv.dataset.sess);if(s)drawScene(cv,sceneFor(s),progressOf(s))});
+  document.querySelectorAll('canvas[data-preview]').forEach(cv=>{const th=cv.dataset.preview;drawScene(cv,{theme:th,planned:+cv.dataset.min,seed:+cv.dataset.seed||4242,vigor:1,tree:cv.dataset.tree||S.settings.tree,aurora:cv.dataset.aurora==='1'},+(cv.dataset.p||1),{now:900})});
+  if(r==='world')drawPano();
+  if(r==='me')drawEmblem();
+}
+window.addEventListener('hashchange',()=>{render();window.scrollTo(0,0)});
+
+/* ================= Today ================= */
+function greeting(){const h=new Date().getHours();return t(h<5?'Late night':h<12?'Good morning':h<17?'Good afternoon':h<22?'Good evening':'Late night')}
+function bestHour(list){const hrs=new Array(24).fill(0);list.forEach(s=>{hrs[new Date(s.start).getHours()]+=s.verified});let b=0;hrs.forEach((v,i)=>{if(v>hrs[b])b=i});return{h:b,hrs}}
+function statusLine(vToday,goal){
+  const bn=L()==='bn',now=new Date(),bh=bestHour(S.sessions.filter(s=>s.start>addDays(Date.now(),-28))).h;
+  if(vToday>=goal*60)return bn?'আজকের লক্ষ্য পূরণ। এখন যা হবে, সবটাই বোনাস।':'Goal met. Anything from here is a bonus.';
+  if(vToday===0){if(Math.abs(now.getHours()-bh)<=1)return bn?`তোমার সেরা ফোকাস সাধারণত ${fmtHour(bh)} এর দিকে। এখনই সেই সময়।`:`You usually focus best around ${fmtHour(bh)}. That's now.`;
+    return bn?'একটা ছোট ব্লক দিয়ে শুরু করো। ১৫ মিনিটও গোনা হয়।':'Start with one small block. Fifteen minutes still counts.'}
+  const left=goal*60-vToday;return bn?`আজ ${fmtDur(vToday)} যাচাইকৃত। লক্ষ্য থেকে ${fmtDur(left)} দূরে।`:`${fmtDur(vToday)} verified so far. ${fmtDur(left)} to your goal.`
+}
+function vToday(){
+  const day=dayStart(Date.now()),list=sessOn(day).sort((a,b)=>b.start-a.start),v=sumV(list),c=sumC(list),goal=S.settings.goal;
+  const pv=Math.min(1,v/(goal*60)),pc=Math.min(1,c/(goal*60)),C=2*Math.PI*56;
+  if(S.intention.day!==day){S.intention={day,text:''}}
+  const recent=S.sessions.filter(s=>s.start>addDays(Date.now(),-7));
+  return `
+  <header class="topbar"><div><p class="eyebrow">${esc(new Date().toLocaleDateString(L()==='bn'?'bn-BD':'en-GB',{weekday:'long',day:'numeric',month:'long'}))}</p><h1>${greeting()}</h1></div>
+  <span class="pill gold mono">${nn(streak())} ${L()==='bn'?'দিন':'day'}${L()==='bn'?'':streak()===1?'':'s'}</span></header>
+  <p class="status">${esc(statusLine(v,goal))}</p>
+  <section class="card"><div class="goal">
+    <div class="ring"><svg viewBox="0 0 132 132"><circle cx="66" cy="66" r="56" fill="none" stroke="var(--raised)" stroke-width="12"/>
+      <circle cx="66" cy="66" r="56" fill="none" stroke="var(--claimed)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C*pc} ${C}"/>
+      <circle cx="66" cy="66" r="56" fill="none" stroke="var(--accent-fill)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C*pv} ${C}"/></svg>
+      <div class="lbl"><span class="big">${fmtDur(v)}</span><span class="muted" style="font-size:12px">${t('of')} ${fmtDur(goal*60)}</span></div></div>
+    <div class="kv">
+      <div><b>${nn(list.length)}</b><span>${t('Sessions')}</span></div>
+      <div><b>${c?nn(Math.round(v/c*100))+'%':'–'}</b><span>${t('Focus score')}</span></div>
+      <div><b>${nn(list.reduce((a,s)=>a+s.dist,0))}</b><span>${t('Away moments')}</span></div>
+      <div><b>${nn(streak())}</b><span>${t('Day streak')}</span></div>
+    </div></div>
+    <div class="legend"><span><i style="background:var(--accent-fill)"></i>${t('Verified')}</span><span><i style="background:var(--claimed)"></i>${t('claimed')}</span></div>
+  </section>
+  <section class="card flat"><p class="eyebrow">${t('One thing for today')}</p>
+    <input class="intent" id="intent" maxlength="80" placeholder="${esc(t('What would make today count?'))}" value="${esc(S.intention.text)}"></section>
+  <section style="display:flex;flex-direction:column;gap:10px"><p class="eyebrow">${t('Quick start')}</p>
+    <div class="quick">${[25,50,90].map(m=>`<button data-act="quick" data-min="${m}"><b>${nn(m)}</b><span>${t('min')}</span></button>`).join('')}</div></section>
+  <button class="card promo" data-act="review"><div class="thumb"><canvas width="96" height="96" data-preview="sky" data-min="60" data-seed="7" data-p="1"></canvas></div>
+    <div class="grow"><h3>${t('Your week in review')}</h3><p class="muted" style="font-size:13px">${t('Seven days, five cards. Tap through.')}</p></div></button>
+  <section class="card"><div class="row between"><h2>${t('Today so far')}</h2><span class="muted mono" style="font-size:13px">${fmtDur(c)} ${t('claimed')}</span></div>
+    ${list.length?`<div class="list">${list.map(itemRow).join('')}</div>`:`<p class="muted">${t('Nothing yet. Your first block shows up here.')}</p>`}
+  </section>`;
+}
+function itemRow(s){const tm=new Date(s.start).toLocaleTimeString(L()==='bn'?'bn-BD':'en-GB',{hour:'numeric',minute:'2-digit'});
+  return `<div class="item"><div class="thumb"><canvas width="96" height="96" data-sess="${s.id}"></canvas></div>
+  <div class="grow"><div class="row" style="gap:6px"><strong style="font-size:14px">${esc(s.label||itemName(s))}</strong>${s.sample?`<span class="sample-flag">${L()==='bn'?'নমুনা':'sample'}</span>`:''}</div>
+  <span class="muted" style="font-size:12px">${esc(tm)} · ${t(CATS[s.cat].n)}${s.done?'':' · '+(L()==='bn'?'আগে থামানো':'stopped early')}</span></div>
+  <div style="text-align:right"><div class="mono" style="font-size:14px">${fmtDur(s.verified)}</div><div class="muted mono" style="font-size:11px">${nn(Math.round(s.verified/Math.max(1,s.claimed)*100))}%</div></div></div>`}
+
+/* ================= Focus setup ================= */
+const ROUTINES=[
+ {n:'Classic Pomodoro',bn:'ক্লাসিক পোমোডোরো',d:'4 × 25 min, short breaks',dbn:'৪ × ২৫ মিনিট, ছোট বিরতি',b:[[25,0],[5],[25,0],[5],[25,0],[5],[25,0]]},
+ {n:'Deep 50/10',bn:'গভীর ৫০/১০',d:'Three long blocks for hard problems',dbn:'কঠিন কাজের জন্য তিনটা লম্বা ব্লক',b:[[50,0],[10],[50,0],[10],[50,0]]},
+ {n:'Exam morning',bn:'পরীক্ষার সকাল',d:'SSC and HSC style: practice, then revise',dbn:'এসএসসি/এইচএসসি ধাঁচে: অনুশীলন, তারপর রিভিশন',b:[[45,2],[10],[45,2],[10],[30,3]]},
+ {n:'Admission sprint',bn:'ভর্তি প্রস্তুতি',d:'Two 90 minute deep blocks and an MCQ set',dbn:'দুইটা ৯০ মিনিটের গভীর ব্লক আর একটা MCQ সেট',b:[[90,0],[15],[90,0],[15],[60,2]]}
+];
+function vFocus(){
+  const su=S.setup,mixes=mixActive();
+  return `
+  <header class="topbar"><h1>${t('Set up a block')}</h1></header>
+  <section class="card"><div class="dial"><span class="mins" id="dialMin">${nn(su.min)}</span><span class="unit">${t('minutes')}</span></div>
+    <input type="range" id="minRange" min="5" max="120" step="5" value="${su.min}" aria-label="${t('minutes')}">
+    <div class="chips">${[15,25,45,60,90].map(m=>`<button class="chip" data-act="setmin" data-min="${m}" aria-pressed="${su.min===m}">${nn(m)}</button>`).join('')}</div></section>
+  <section class="card"><label class="eyebrow" for="label">${t('What are you working on?')}</label>
+    <input class="field" id="label" maxlength="60" placeholder="${esc(t('e.g. Physics chapter 4'))}" value="${esc(su.label)}">
+    <p class="eyebrow">${t('Type of work')}</p>
+    <div class="chips">${CATS.map((c,i)=>`<button class="chip" data-act="setcat" data-i="${i}" aria-pressed="${su.cat===i}"><span class="dot" style="background:var(${c.v})"></span>${t(c.n)}</button>`).join('')}</div></section>
+  <section class="card"><p class="eyebrow">${t('What grows')}</p>
+    <div class="grows">${[['garden','Garden'],['city','Tower'],['sky','Sky']].map(([k,n])=>`<button data-act="settheme" data-th="${k}" aria-pressed="${su.theme===k}"><canvas width="96" height="96" data-preview="${k}" data-min="${su.min}" data-p="1" data-aurora="${S.settings.sky==='aurora'?1:0}"></canvas>${t(n)}</button>`).join('')}</div>
+    <p class="muted" style="font-size:13px" id="growHint">${growHint()}</p></section>
+  <section class="card"><div class="row between"><p class="eyebrow">${t('Sound')}</p><button class="btn sm" data-act="mixer">${svg('note')}${t('Edit mix')}</button></div>
+    <div class="mixsum">${mixes.length?mixes.map(([k,v])=>`<span class="pill">${t(SOUNDS.find(s=>s.id===k).n)} <span class="mono muted">${nn(Math.round(v*100))}</span></span>`).join(''):`<span class="muted">${t('Silent')}</span>`}</div></section>
+  <button class="btn primary big" data-act="start">${svg('play')} ${t('Start focus')} · ${nn(su.min)} ${t('min')}</button>
+  <section class="card"><h2>${t('Routines')}</h2>
+    ${ROUTINES.map((r,i)=>{const tot=r.b.reduce((a,b)=>a+b[0],0),foc=r.b.filter(b=>b.length>1).reduce((a,b)=>a+b[0],0);
+      return `<div class="routine"><div class="row between"><div class="grow"><h3>${L()==='bn'?r.bn:r.n}</h3><p class="muted" style="font-size:13px">${L()==='bn'?r.dbn:r.d}</p></div>
+      <button class="btn sm" data-act="routine" data-i="${i}">${t('Start routine')}</button></div>
+      <div class="blocks">${r.b.map(b=>`<i style="flex:${b[0]};background:${b.length>1?`var(${CATS[b[1]].v})`:'var(--line)'}"></i>`).join('')}</div>
+      <p class="muted mono" style="font-size:12px">${fmtDur(foc*60)} ${L()==='bn'?'ফোকাস':'focus'} · ${fmtDur(tot*60)} ${L()==='bn'?'মোট':'total'}</p></div>`}).join('')}
+  </section>`;
+}
+function growHint(){const su=S.setup,bn=L()==='bn';
+  if(su.theme==='garden'){const sp=species(su.min);const nm=sp==='TREE'?(bn?TREES[S.settings.tree].bn:TREES[S.settings.tree].n):(bn?SPN[sp]:sp);
+    return bn?`${nn(su.min)} মিনিটে জন্মাবে: ${nm}। লম্বা ব্লকে বড় গাছ। বাইরে গেলে পাতা ফ্যাকাশে হয়।`:`${su.min} minutes grows a ${nm}. Longer blocks grow bigger plants. Time away turns the leaves pale.`}
+  if(su.theme==='city')return bn?`প্রতি ৫ মিনিটে এক তলা। ${nn(floors(su.min))} তলা উঠবে।`:`One floor every 5 minutes. This one tops out at ${floors(su.min)} floors.`;
+  return bn?`প্রতি ৩ মিনিটে একটা তারা, শেষে নক্ষত্রমণ্ডল।`:`A star every 3 minutes. They join into a constellation at the end.`}
+
+/* ================= World ================= */
+function vWorld(){
+  const th=S.world,list=S.sessions.filter(s=>s.theme===th).sort((a,b)=>b.start-a.start),hasSample=S.sessions.some(s=>s.sample);
+  const lbl={garden:'Plants',city:'Towers',sky:'Constellations'}[th];
+  return `<header class="topbar"><h1>${L()==='bn'?'তোমার জগৎ':'Your world'}</h1></header>
+  <div class="seg" role="group">${[['garden','Garden'],['city','Tower'],['sky','Sky']].map(([k,n])=>`<button data-act="world" data-th="${k}" aria-pressed="${th===k}">${t(n)}</button>`).join('')}</div>
+  <div class="pano"><canvas id="pano" width="192" height="96"></canvas></div>
+  <div class="row between"><div><b class="mono" style="font-size:20px">${nn(list.length)}</b> <span class="muted">${t(lbl)}</span></div><span class="muted mono">${fmtDur(sumV(list))} ${L()==='bn'?'যাচাইকৃত':'verified'}</span></div>
+  ${hasSample?`<div class="banner"><span>${L()==='bn'?'কিছু জিনিস নমুনা ইতিহাস থেকে।':'Some of these come from sample history.'}</span><button class="btn sm" data-act="clearSample">${t('Clear')}</button></div>`:''}
+  ${list.length?`<div class="coll">${list.slice(0,45).map(s=>`<figure><canvas width="96" height="96" data-sess="${s.id}"></canvas><figcaption>${esc(s.label||itemName(s))}<span>${fmtDate(s.start)} · ${fmtDur(s.verified)}${s.done?'':' · '+nn(Math.round(progressOf(s)*100))+'%'}</span></figcaption></figure>`).join('')}</div>`:`<p class="muted">${t('Nothing grown here yet.')}</p>`}`;
+}
+function drawPano(){
+  const cv=document.getElementById('pano');if(!cv)return;const ctx=cv.getContext('2d');ctx.imageSmoothingEnabled=false;const g=P(ctx);
+  const th=S.world,list=S.sessions.filter(s=>s.theme===th).sort((a,b)=>a.start-b.start);
+  const off=mkCanvas();
+  if(th==='garden'){
+    const gr=ctx.createLinearGradient(0,0,0,96);gr.addColorStop(0,'#17221d');gr.addColorStop(1,'#26372c');ctx.fillStyle=gr;ctx.fillRect(0,0,192,96);
+    g.r(150,6,34,30,'#2b4655');g.r(166,6,2,30,'#17221d');g.r(150,20,34,2,'#17221d');
+    const items=list.slice(-12);
+    items.forEach((s,i)=>{const row=i<6?0:1,col=i%6;drawScene(off,sceneFor(s),progressOf(s),{bg:false});ctx.drawImage(off,0,0,96,96,16+col*32-24,row*48-1,48,48)});
+    g.r(0,46,192,2,'#6a4c34');g.r(0,48,192,1,'#3a291c');g.r(0,93,192,3,'#6a4c34');
+  }else if(th==='city'){
+    const gr=ctx.createLinearGradient(0,0,0,96);gr.addColorStop(0,'#0a0f21');gr.addColorStop(1,'#1f2a4e');ctx.fillStyle=gr;ctx.fillRect(0,0,192,96);
+    g.disc(170,14,6,'#efe8cf');g.disc(172,12,6,'#0b1123');
+    const r=mkRng(9);for(let i=0;i<40;i++){ctx.fillStyle='rgba(255,255,255,.3)';ctx.fillRect(Math.floor(r()*192),Math.floor(r()*40),1,1)}
+    const items=list.slice(-10);const now=performance.now();
+    items.forEach((s,i)=>{drawScene(off,sceneFor(s),progressOf(s),{bg:false,now});ctx.drawImage(off,0,0,96,96,6+i*18-36+(i%2)*3,24-(i%3)*2,72,72)});
+    g.r(0,90,192,6,'#111626');
+  }else{
+    const gr=ctx.createLinearGradient(0,0,0,96);gr.addColorStop(0,'#03050c');gr.addColorStop(1,'#0e1636');ctx.fillStyle=gr;ctx.fillRect(0,0,192,96);
+    if(S.settings.sky==='aurora'){for(let x=0;x<192;x++){const y=30+Math.sin(x/17)*7;for(let k=0;k<16;k++){ctx.fillStyle='rgba(80,230,160,'+(0.14*(1-k/16))+')';ctx.fillRect(x,y+k,1,1)}}}
+    const r=mkRng(3);for(let i=0;i<90;i++){ctx.fillStyle='rgba(255,255,255,'+(.1+r()*.3)+')';ctx.fillRect(Math.floor(r()*192),Math.floor(r()*96),1,1)}
+    const items=list.slice(-8);items.forEach((s,i)=>{drawScene(off,sceneFor(s),progressOf(s),{bg:false,now:0});ctx.drawImage(off,0,0,96,96,(i%4)*48,Math.floor(i/4)*44,48,48)});
+    for(let x=0;x<192;x++){const y=Math.round(90+Math.sin(x/13)*3);g.r(x,y,1,96-y,'#060912')}
+  }
+}
+
+/* ================= Stats ================= */
+function vStats(){
+  const today=dayStart(Date.now()),bn=L()==='bn';
+  const days=[];for(let i=6;i>=0;i--){const d=addDays(today,-i),l=sessOn(d);days.push({d,v:sumV(l),c:sumC(l)})}
+  const wk=S.sessions.filter(s=>s.start>=addDays(today,-6)),pw=S.sessions.filter(s=>s.start>=addDays(today,-13)&&s.start<addDays(today,-6));
+  const wv=sumV(wk),wc=sumC(wk),pv=sumV(pw),pc=sumC(pw);
+  const last28=S.sessions.filter(s=>s.start>=addDays(today,-27)),bh=bestHour(last28);
+  const avg=wk.length?wv/wk.length:0;
+  // week chart
+  const mx=Math.max(60,...days.map(x=>x.c/60)),top=Math.ceil(mx/60)*60,H=110,bw=26,gap=(300-7*bw)/6;
+  const y=m=>16+H-(m/top)*H;
+  let wsvg=`<svg viewBox="0 0 330 150" role="img" aria-label="${t('Verified vs claimed')}">`;
+  for(let k=0;k<=top;k+=Math.max(60,top/2)){wsvg+=`<line class="grid" x1="28" x2="330" y1="${y(k)}" y2="${y(k)}"/><text x="0" y="${y(k)+3}">${nn(k/60)}${bn?'ঘ':'h'}</text>`}
+  days.forEach((x,i)=>{const X=30+i*(bw+gap);wsvg+=`<rect class="bc" x="${X}" y="${y(x.c/60)}" width="${bw}" height="${16+H-y(x.c/60)}" rx="4"/><rect class="bv" x="${X+4}" y="${y(x.v/60)}" width="${bw-8}" height="${16+H-y(x.v/60)}" rx="3"/>
+    <text x="${X+bw/2}" y="144" text-anchor="middle" ${i===6?'class="now" style="font-weight:600"':''}>${dname(new Date(x.d).getDay())}</text>`});
+  wsvg+='</svg>';
+  // heatmap
+  const start=addDays(today,-(7*15+new Date(today).getDay()));let hm=`<svg viewBox="0 0 300 132" class="hm" role="img" aria-label="${t('Last 16 weeks')}">`;
+  [1,3,5].forEach(r=>hm+=`<text x="0" y="${r*17+12}">${dname(r)}</text>`);
+  for(let w=0;w<16;w++)for(let r=0;r<7;r++){const d=addDays(start,w*7+r);if(d>today)continue;const m=sumV(sessOn(d))/60;const cls=m<=0?'h0':m<30?'h1':m<60?'h2':m<120?'h3':'h4';hm+=`<rect class="${cls}" x="${30+w*17}" y="${r*17}" width="14" height="14"><title>${fmtDate(d)}: ${fmtDur(m*60)}</title></rect>`}
+  hm+='</svg>';
+  // hours
+  const hmax=Math.max(1,...bh.hrs);let hs=`<svg viewBox="0 0 330 100" role="img" aria-label="${t('When you focus')}">`;
+  bh.hrs.forEach((v,i)=>{const h=(v/hmax)*70;hs+=`<rect class="${i===bh.h?'bv':'bc'}" x="${6+i*13.5}" y="${76-h}" width="10" height="${Math.max(1,h)}" rx="2"/>`});
+  [0,6,12,18].forEach(h=>hs+=`<text x="${6+h*13.5}" y="94">${fmtHour(h)}</text>`);hs+='</svg>';
+  // categories
+  const cat=[0,0,0,0];last28.forEach(s=>cat[s.cat]+=s.verified);const ct=cat.reduce((a,b)=>a+b,0)||1;
+  return `<header class="topbar"><h1>${t('Stats')}</h1><button class="btn sm" data-act="review">${t('Open weekly review')}</button></header>
+  ${S.sessions.some(s=>s.sample)?`<div class="banner"><span>${t('Sample history')}: ${bn?'তোমার নিজের সেশন যোগ হলে আসল ছবি দেখবে।':'your own sessions mix in as you go.'}</span><button class="btn sm" data-act="clearSample">${t('Clear')}</button></div>`:''}
+  <div class="tiles">
+    <div class="tile"><span>${t('This week')}</span><b>${fmtDur(wv)}</b><span>${pv?(wv>=pv?'+':'')+nn(Math.round((wv-pv)/pv*100))+'% '+(bn?'গত সপ্তাহের তুলনায়':'vs last week'):''}</span></div>
+    <div class="tile"><span>${t('Focus score')}</span><b>${wc?nn(Math.round(wv/wc*100))+'%':'–'}</b><span>${bn?'যাচাইকৃত ÷ দাবিকৃত':'verified ÷ claimed'}</span></div>
+    <div class="tile"><span>${t('Best hour')}</span><b>${fmtHour(bh.h)}</b><span>${bn?'গত ২৮ দিন':'last 28 days'}</span></div>
+    <div class="tile"><span>${t('Avg block')}</span><b>${fmtDur(avg)}</b><span>${nn(wk.length)} ${bn?'টি সেশন':'sessions'}</span></div>
+  </div>
+  <section class="card"><h2>${t('Verified vs claimed')}</h2><div class="chart">${wsvg}</div>
+    <div class="legend"><span><i style="background:var(--accent-fill)"></i>${t('Verified')}</span><span><i style="background:var(--claimed)"></i>${t('claimed')}</span></div></section>
+  <section class="card"><h2>${t('What the numbers say')}</h2><div>${insights().map((s,i)=>`<div class="insight"><span class="n">${nn(String(i+1).padStart(2,'0'))}</span><p>${esc(s)}</p></div>`).join('')}</div></section>
+  <section class="card"><h2>${t('Last 16 weeks')}</h2><div class="chart">${hm}</div>
+    <div class="legend"><span>${bn?'কম':'Less'}</span>${['h0','h1','h2','h3','h4'].map(c=>`<svg width="12" height="12" class="hm"><rect class="${c}" width="12" height="12"/></svg>`).join('')}<span>${bn?'বেশি':'More'}</span></div></section>
+  <section class="card"><h2>${t('When you focus')}</h2><div class="chart">${hs}</div></section>
+  <section class="card"><h2>${t('By type of work')}</h2><div class="stack">${cat.map((v,i)=>`<i style="width:${v/ct*100}%;background:var(${CATS[i].v})"></i>`).join('')}</div>
+    <div class="legend wrap">${cat.map((v,i)=>`<span><i style="background:var(${CATS[i].v})"></i>${t(CATS[i].n)} <span class="mono">${nn(Math.round(v/ct*100))}%</span></span>`).join('')}</div></section>`;
+}
+function insights(){
+  const bn=L()==='bn',today=dayStart(Date.now()),l=S.sessions.filter(s=>s.start>=addDays(today,-27)),out=[];
+  if(!l.length)return[bn?'কয়েকটা সেশন হলে এখানে তোমার প্যাটার্ন দেখাবে।':'After a few sessions your patterns show up here.'];
+  const bh=bestHour(l),tot=sumV(l)||1,win=[bh.h-1,bh.h,bh.h+1].reduce((a,h)=>a+(bh.hrs[(h+24)%24]||0),0);
+  out.push(bn?`তোমার যাচাইকৃত সময়ের ${nn(Math.round(win/tot*100))}% আসে ${fmtHour((bh.h+23)%24)} থেকে ${fmtHour((bh.h+2)%24)} এর মধ্যে। কঠিন কাজ এই সময়ে রাখো।`
+    :`${Math.round(win/tot*100)}% of your verified time lands between ${fmtHour((bh.h+23)%24)} and ${fmtHour((bh.h+2)%24)}. Put the hard work there.`);
+  const b=[[0,30],[31,60],[61,999]].map(([a,z])=>{const x=l.filter(s=>s.planned>=a&&s.planned<=z);return x.length?sumV(x)/Math.max(1,sumC(x)):null});
+  if(b[1]!=null&&b[2]!=null){out.push(bn?`৩১ থেকে ৬০ মিনিটের ব্লকে তুমি ${nn(Math.round(b[1]*100))}% যাচাইকৃত থাকো, ৬০ মিনিটের বেশিতে ${nn(Math.round(b[2]*100))}%।`
+    :`Blocks of 31 to 60 minutes stay ${Math.round(b[1]*100)}% verified. Longer ones stay ${Math.round(b[2]*100)}%.`)}
+  const clean=l.filter(s=>s.dist===0&&s.done).length;
+  out.push(bn?`গত চার সপ্তাহে ${nn(clean)}টা ব্লক একবারও বাইরে না গিয়ে শেষ করেছ।`:`${clean} blocks in the last four weeks finished without stepping away once.`);
+  return out;
+}
+
+/* ================= Me ================= */
+const LEVELS=[[0,'Seedling','চারা'],[1,'Sprout','অঙ্কুর'],[3,'Grower','চাষি'],[8,'Gardener','মালি'],[20,'Forester','বনরক্ষী'],[50,'Grove keeper','কুঞ্জের রক্ষক']];
+function levelInfo(){const h=sumV(real())/3600;let i=0;LEVELS.forEach((l,k)=>{if(h>=l[0])i=k});const nx=LEVELS[i+1];return{i,h,name:L()==='bn'?LEVELS[i][2]:LEVELS[i][1],next:nx,prog:nx?(h-LEVELS[i][0])/(nx[0]-LEVELS[i][0]):1}}
+const UNLOCKS=[{lv:1,k:'krishnachura',n:'Krishnachura tree',bn:'কৃষ্ণচূড়া গাছ',d:'Red blossoms on 60+ minute garden blocks',dbn:'৬০+ মিনিটের বাগান ব্লকে লাল ফুল'},
+ {lv:2,k:'sonalu',n:'Sonalu tree',bn:'সোনালু গাছ',d:'Hanging yellow chains',dbn:'ঝুলন্ত হলুদ ফুলের মালা'},
+ {lv:3,k:'aurora',n:'Aurora sky',bn:'অরোরা আকাশ',d:'Green light behind your constellations',dbn:'নক্ষত্রের পেছনে সবুজ আলো'}];
+const ACH=[
+ {b:'1st',n:'First block',bn:'প্রথম ব্লক',d:'Finish any block',dbn:'যেকোনো ব্লক শেষ করো',f:l=>l.some(s=>s.done)},
+ {b:'3d',n:'Three days',bn:'তিন দিন',d:'3 day streak',dbn:'টানা ৩ দিন',f:()=>realStreak()>=3},
+ {b:'7d',n:'A full week',bn:'পুরো সপ্তাহ',d:'7 day streak',dbn:'টানা ৭ দিন',f:()=>realStreak()>=7},
+ {b:'60',n:'Deep diver',bn:'গভীর ডুব',d:'Finish a 60+ min block',dbn:'৬০+ মিনিটের ব্লক শেষ',f:l=>l.some(s=>s.done&&s.planned>=60)},
+ {b:'0',n:'Untouched',bn:'অটল',d:'25+ min, never left',dbn:'২৫+ মিনিট, একবারও বের হওনি',f:l=>l.some(s=>s.done&&s.dist===0&&s.planned>=25)},
+ {b:'AM',n:'Early bird',bn:'ভোরের পাখি',d:'Start before 7 AM',dbn:'সকাল ৭টার আগে শুরু',f:l=>l.some(s=>new Date(s.start).getHours()<7)},
+ {b:'PM',n:'Night owl',bn:'রাতজাগা পেঁচা',d:'Start after 10 PM',dbn:'রাত ১০টার পরে শুরু',f:l=>l.some(s=>new Date(s.start).getHours()>=22)},
+ {b:'10h',n:'Ten hours',bn:'দশ ঘণ্টা',d:'10 verified hours',dbn:'১০ ঘণ্টা যাচাইকৃত',f:l=>sumV(l)>=36000},
+ {b:'R',n:'Routine done',bn:'রুটিন শেষ',d:'Finish a whole routine',dbn:'পুরো একটা রুটিন শেষ',f:l=>l.some(s=>s.routineDone)}
+];
+function realStreak(){const rs=real();let d=dayStart(Date.now());const on=x=>sumV(rs.filter(s=>dayStart(s.start)===x));if(on(d)<600)d=addDays(d,-1);let n=0;while(on(d)>=600){n++;d=addDays(d,-1)}return n}
+function vMe(){
+  const li=levelInfo(),bn=L()==='bn',rl=real(),st=S.settings;
+  return `<header class="topbar"><h1>${t('Me')}</h1></header>
+  <section class="card"><div class="level"><div class="emblem"><canvas id="emblem" width="96" height="96"></canvas></div>
+    <div style="display:flex;flex-direction:column;gap:6px;min-width:0"><p class="eyebrow">${t('Level')} ${nn(li.i+1)}</p><h2>${esc(li.name)}</h2>
+    <div class="xp"><i style="width:${Math.round(li.prog*100)}%"></i></div>
+    <p class="muted" style="font-size:12px">${li.next?(bn?`${fmtDur(li.h*3600)} যাচাইকৃত। পরের লেভেল ${nn(li.next[0])} ঘণ্টায়।`:`${fmtDur(li.h*3600)} verified. Next level at ${li.next[0]}h.`):(bn?'সর্বোচ্চ লেভেল।':'Top level.')}</p></div></div>
+    <p class="muted" style="font-size:12px">${bn?'লেভেল শুধু তোমার নিজের যাচাইকৃত সময় থেকে বাড়ে, নমুনা ইতিহাস থেকে না।':'Levels count only your own verified time, never the sample history.'}</p>
+    <p class="eyebrow">${t('Unlocks')}</p>
+    <div class="unlocks">${UNLOCKS.map(u=>{const ok=li.i>=u.lv;const isTree=u.k!=='aurora';const sel=isTree?st.tree===u.k:st.sky==='aurora';
+      return `<div class="unlock ${ok?'':'locked'}"><div class="thumb"><canvas width="96" height="96" data-preview="${isTree?'garden':'sky'}" data-min="60" data-seed="31" data-tree="${isTree?u.k:''}" data-aurora="${isTree?0:1}"></canvas></div>
+      <div class="grow"><strong>${bn?u.bn:u.n}</strong><div class="muted" style="font-size:12px">${bn?u.dbn:u.d}</div></div>
+      ${ok?`<button class="chip" data-act="unlock" data-k="${u.k}" aria-pressed="${sel}">${sel?(bn?'চালু':'On'):(bn?'চালু করো':'Use')}</button>`:`<span class="pill">${t('Level')} ${nn(u.lv+1)}</span>`}</div>`}).join('')}</div>
+  </section>
+  <section class="card"><h2>${t('Achievements')}</h2><div class="badges">${ACH.map(a=>{const ok=a.f(rl);return`<div class="badge ${ok?'':'locked'}"><span class="b">${a.b}</span><strong>${bn?a.bn:a.n}</strong><small>${bn?a.dbn:a.d}</small></div>`}).join('')}</div></section>
+  <section class="card"><h2>${t('Settings')}</h2><div>
+    <div class="set"><div class="grow"><label for="goalR">${t('Daily goal')}</label><small class="mono">${fmtDur(st.goal*60)}</small></div><input type="range" id="goalR" min="30" max="480" step="15" value="${st.goal}" style="max-width:150px"></div>
+    <div class="set"><div class="grow">${t('Language')}</div><div class="chips"><button class="chip" data-act="lang" data-v="en" aria-pressed="${st.lang==='en'}">English</button><button class="chip" data-act="lang" data-v="bn" aria-pressed="${st.lang==='bn'}">বাংলা</button></div></div>
+    <div class="set"><div class="grow">${t('Pause when I leave')}<small>${bn?'অ্যাপ ছেড়ে গেলে টাইমার থেমে যাবে, দাবিকৃত সময়ও বাড়বে না।':'Leaving the app stops the clock, so claimed time stops too.'}</small></div><button class="switch" role="switch" aria-checked="${st.strict}" data-act="strict" aria-label="${t('Pause when I leave')}"></button></div>
+    <div class="set"><div class="grow">${t('Appearance')}</div><div class="chips">${['auto','dark','light'].map(k=>`<button class="chip" data-act="themeSet" data-v="${k}" aria-pressed="${st.theme===k}">${t(k[0].toUpperCase()+k.slice(1))}</button>`).join('')}</div></div>
+  </div></section>
+  <section class="card"><h2>${bn?'তথ্য':'Data'}</h2><p class="muted" style="font-size:13px">${bn?'সবকিছু এই ব্রাউজারেই থাকে। কোনো অ্যাকাউন্ট নেই, কিছু কোথাও পাঠানো হয় না।':'Everything stays in this browser. No account, nothing is sent anywhere.'}</p>
+    <div class="chips">${S.sessions.some(s=>s.sample)?`<button class="btn sm" data-act="clearSample">${t('Clear sample history')}</button>`:''}<button class="btn sm" data-act="backup">${t('Copy backup')}</button><button class="btn sm danger" data-act="erase" id="eraseBtn">${t('Erase everything')}</button></div></section>
+  <section class="card flat"><p class="muted" style="font-size:13px">${bn?'এটা FocusFreak এর ওয়েব প্রোটোটাইপ। ওয়েবে একটাই যাচাই সম্ভব: ট্যাবটা সামনে আছে কি না। অ্যান্ড্রয়েড অ্যাপে স্ক্রিন লক, ফোন স্থির থাকা আর অন্য অ্যাপ খোলা হয়েছে কি না, সেটাও দেখা হয়।':'This is the FocusFreak web prototype. On the web there is one check: whether this tab is in front of you. The Android app also checks screen lock, phone stillness and other apps opened.'}</p></section>`;
+}
+function drawEmblem(){const cv=document.getElementById('emblem');if(!cv)return;const li=levelInfo();
+  const sp=[5,15,25,45,60,60][li.i];drawScene(cv,{theme:'garden',planned:sp,seed:1234,vigor:1,tree:li.i>=2?'sonalu':li.i>=1?'krishnachura':'banyan'},li.i===0?.35:1)}
+
+/* ================= session engine ================= */
+let RUN=null,TICK=null,WAKE=null;
+function startSession(min,opts){
+  opts=opts||{};AU.init();AU.resume();
+  const su=S.setup;
+  RUN={id:'u'+Date.now(),planned:min,cat:opts.cat!=null?opts.cat:su.cat,theme:su.theme,label:opts.label!=null?opts.label:su.label.trim(),seed:Math.floor(Math.random()*1e9),
+    tree:S.settings.tree,aurora:S.settings.sky==='aurora',start:Date.now(),elapsed:0,verified:0,dist:0,state:'running',last:performance.now(),visible:!document.hidden,awayAt:0,routine:opts.routine||null,armStop:0};
+  AU.fade(0,.01);AU.apply(S.settings.mix);AU.fade(1,3);AU.chime('start');
+  try{navigator.wakeLock&&navigator.wakeLock.request('screen').then(w=>WAKE=w).catch(()=>{})}catch(e){}
+  showSession();clearInterval(TICK);TICK=setInterval(tick,250);
+}
+function accumulate(){if(!RUN)return;const now=performance.now(),dt=now-RUN.last;RUN.last=now;if(RUN.state==='running'){RUN.elapsed+=dt;if(RUN.visible)RUN.verified+=dt}}
+function tick(){if(!RUN)return;accumulate();if(RUN.elapsed>=RUN.planned*60000){finish(true);return}paintSession()}
+document.addEventListener('visibilitychange',()=>{
+  if(!RUN)return;accumulate();const now=performance.now();
+  if(document.hidden){RUN.visible=false;RUN.awayAt=now;RUN.dist++;if(S.settings.strict&&RUN.state==='running'){RUN.state='paused';RUN.autoPaused=true}}
+  else{RUN.visible=true;const away=(now-RUN.awayAt)/1000;
+    if(RUN.autoPaused){RUN.state='running';RUN.autoPaused=false;toast(L()==='bn'?`ফিরে এসেছ। ${fmtClock(away)} টাইমার থেমে ছিল।`:`Welcome back. The clock was paused for ${fmtClock(away)}.`)}
+    else if(away>2)toast(`${t('Welcome back')}. ${fmtClock(away)} ${t('not counted as verified')}.`);
+    try{navigator.wakeLock&&navigator.wakeLock.request('screen').then(w=>WAKE=w).catch(()=>{})}catch(e){}
+    paintSession()}
+});
+function showSession(){
+  const el=document.getElementById('session'),c=CATS[RUN.cat],r=RUN.routine;
+  el.className='overlay';el.hidden=false;
+  el.innerHTML=`<div class="ov">
+   <div class="row between hide-deep"><div class="grow"><p class="eyebrow">${r?`${t('Block')} ${nn(r.focusIdx)}/${nn(r.focusTotal)} · ${esc(r.name)}`:t('Focus')}</p>
+     <h2 style="overflow-wrap:anywhere">${esc(RUN.label||itemName(RUN))}</h2></div><span class="pill"><span class="blip" style="background:var(${c.v})"></span>${t(c.n)}</span></div>
+   <div class="deep-exit" data-act="deep">${t('Tap anywhere to exit deep mode')}</div>
+   <div class="stage" data-act="deepTap"><canvas id="stageCv" width="96" height="96"></canvas></div>
+   <div class="countdown" id="cd" data-act="deepTap">00:00</div>
+   <div class="sess-meta hide-deep" id="smeta"></div>
+   <div class="hide-deep" style="display:flex;flex-direction:column;gap:6px"><div class="vbar"><i id="vb1" style="background:var(--accent-fill)"></i><i id="vb2" style="background:var(--claimed)"></i></div>
+     <div class="row between muted mono" style="font-size:12px"><span id="vtxt"></span><span id="gtxt"></span></div></div>
+   <p class="muted hide-deep" id="sline" style="text-align:center;font-size:14px;min-height:2.8em"></p>
+   <div class="controls hide-deep">
+     <button class="ctl main" data-act="pause"><span class="disc" id="pbtn">${svg('pause')}</span><span id="plbl">${t('Pause')}</span></button>
+     <button class="ctl" data-act="mixer"><span class="disc">${svg('note')}</span>${t('Sounds')}</button>
+     <button class="ctl" data-act="deep"><span class="disc">${svg('moonc')}</span>${t('Deep mode')}</button>
+     <button class="ctl" data-act="stop" id="stopBtn"><span class="disc">${svg('stop')}</span><span id="slbl">${t('Stop')}</span></button>
+   </div></div>`;
+  paintSession();
+}
+function paintSession(){
+  if(!RUN)return;const el=document.getElementById('session');if(el.hidden)return;
+  const p=clamp(RUN.elapsed/(RUN.planned*60000),0,1),left=RUN.planned*60-RUN.elapsed/1000,bn=L()==='bn';
+  document.getElementById('cd').textContent=fmtClock(left);
+  const cv=document.getElementById('stageCv');drawScene(cv,{theme:RUN.theme,planned:RUN.planned,seed:RUN.seed,vigor:RUN.elapsed?RUN.verified/RUN.elapsed:1,tree:RUN.tree,aurora:RUN.aurora},p,{now:performance.now()});
+  const st=RUN.state==='paused'?['warn','Paused']:!RUN.visible?['warn','Away']:['ok','Verified'];
+  document.getElementById('smeta').innerHTML=`<span class="pill ${st[0]}"><span class="blip"></span>${t(st[1])}</span>${RUN.dist?`<span class="pill">${nn(RUN.dist)} ${bn?'বার বাইরে':RUN.dist===1?'time away':'times away'}</span>`:''}${mixActive().length?`<span class="pill">${svg('note','').replace('<svg','<svg width="12" height="12"')} ${mixActive().length}</span>`:''}`;
+  const tot=RUN.planned*60000;document.getElementById('vb1').style.width=(RUN.verified/tot*100)+'%';document.getElementById('vb2').style.width=((RUN.elapsed-RUN.verified)/tot*100)+'%';
+  document.getElementById('vtxt').textContent=`${t('Verified')} ${fmtClock(RUN.verified/1000)}`;
+  document.getElementById('gtxt').textContent=`${t('claimed')} ${fmtClock(RUN.elapsed/1000)}`;
+  const nm=itemName(RUN);
+  document.getElementById('sline').textContent=RUN.state==='paused'?(bn?'বিরতিতে আছে। কিছু বাড়ছে না।':'Paused. Nothing grows while paused.')
+    :RUN.theme==='garden'?(bn?`তোমার ${nm} ${nn(Math.round(p*100))}% বড় হয়েছে।`:`Your ${nm} is ${Math.round(p*100)}% grown.`)
+    :RUN.theme==='city'?(bn?`${nn(Math.floor(p*floors(RUN.planned)))} / ${nn(floors(RUN.planned))} তলা উঠেছে।`:`${Math.floor(p*floors(RUN.planned))} of ${floors(RUN.planned)} floors built.`)
+    :(bn?`${nn(Math.max(p>0?1:0,Math.floor(p*clamp(Math.round(RUN.planned/3),5,30))))} টা তারা জ্বলেছে।`:`${Math.max(p>0?1:0,Math.floor(p*clamp(Math.round(RUN.planned/3),5,30)))} stars lit.`);
+  document.getElementById('pbtn').innerHTML=svg(RUN.state==='paused'?'play':'pause');document.getElementById('plbl').textContent=t(RUN.state==='paused'?'Resume':'Pause');
+  const sb=document.getElementById('stopBtn'),armed=RUN.armStop>Date.now();sb.classList.toggle('arm',armed);document.getElementById('slbl').textContent=t(armed?'Tap again':'Stop');
+}
+function finish(completed){
+  if(!RUN)return;accumulate();clearInterval(TICK);TICK=null;
+  const R=RUN;RUN=null;try{WAKE&&WAKE.release()}catch(e){}WAKE=null;
+  const claimed=Math.round(Math.min(R.elapsed,R.planned*60000)/1000),verified=Math.round(Math.min(R.verified,R.planned*60000)/1000);
+  const rec={id:R.id,start:R.start,planned:R.planned,claimed,verified,cat:R.cat,theme:R.theme,done:completed,dist:R.dist,label:R.label,seed:R.seed,tree:R.tree,aurora:R.aurora,sample:false};
+  if(R.routine&&completed&&R.routine.idx>=R.routine.blocks.length-1)rec.routineDone=true;
+  if(claimed>=30){S.sessions.push(rec);save()}
+  AU.fade(0,4);setTimeout(()=>{if(!RUN)AU.stopAll()},4200);
+  if(completed)AU.chime('end');
+  document.getElementById('session').hidden=true;
+  showDone(rec,R.routine,claimed>=30);
+}
+function showDone(s,routine,kept){
+  const el=document.getElementById('done'),bn=L()==='bn',p=progressOf(s),nm=itemName(s);
+  const next=routine?routine.blocks[routine.idx+1]:null;
+  el.hidden=false;
+  el.innerHTML=`<div class="ov">
+   <p class="eyebrow">${t(s.done?'Block complete':'Stopped early')}</p>
+   <h1>${s.done?esc(s.theme==='sky'?nm:(bn?nm+' তৈরি':(s.theme==='garden'?nm+' grown':nm+' topped out'))):(bn?`${nm} ${nn(Math.round(p*100))}% পর্যন্ত রাখা হলো`:`Your ${nm} is kept at ${Math.round(p*100)}%`)}</h1>
+   ${!kept?`<p class="muted">${bn?'৩০ সেকেন্ডের কম, তাই সংরক্ষণ হয়নি।':'Under 30 seconds, so it was not saved.'}</p>`:''}
+   <div class="stage"><canvas id="doneCv" width="96" height="96"></canvas></div>
+   <div class="tiles">
+     <div class="tile"><span>${t('Verified')}</span><b>${fmtDur(s.verified)}</b></div>
+     <div class="tile"><span>${t('claimed')}</span><b>${fmtDur(s.claimed)}</b></div>
+     <div class="tile"><span>${t('Focus score')}</span><b>${nn(Math.round(s.verified/Math.max(1,s.claimed)*100))}%</b></div>
+     <div class="tile"><span>${t('Away moments')}</span><b>${nn(s.dist)}</b></div>
+   </div>
+   <p class="muted" style="font-size:14px">${s.dist===0&&s.done&&s.verified>=s.claimed*.97?(bn?'একবারও বের হওনি। পুরো সময়টাই যাচাইকৃত।':'You never stepped away. Every minute counted.'):s.done?(bn?'যেটুকু সময় বাইরে ছিলে, সেটা আলাদা দেখানো হয়েছে। কোনো শাস্তি নেই।':'Time away is shown separately. Nothing is taken from you.'):(bn?'আগে থামলেও যা বেড়েছে তা থাকবে।':'Stopping early keeps what grew.')}</p>
+   <div class="share"><canvas id="shareCv" width="360" height="640"></canvas></div>
+   <div style="display:flex;flex-direction:column;gap:10px">
+     ${next?`<button class="btn primary big" data-act="breakGo">${t('Start break')} · ${nn(next[0])} ${t('min')}</button>`:`<button class="btn primary big" data-act="breakGo" data-min="5">${t('Start break')} · ${nn(5)} ${t('min')}</button>`}
+     <div class="row"><button class="btn grow" data-act="copySum">${t('Copy summary')}</button><button class="btn grow" data-act="home">${t('Back to today')}</button></div>
+   </div></div>`;
+  el._sess=s;el._routine=routine;
+  drawScene(document.getElementById('doneCv'),sceneFor(s),p,{now:0});
+  drawShare(document.getElementById('shareCv'),s);
+  el.scrollTop=0;
+}
+function drawShare(cv,s){
+  const ctx=cv.getContext('2d'),bn=L()==='bn',ff=bn?'"Hind Siliguri", sans-serif':'"Bricolage Grotesque", system-ui, sans-serif',mono='"JetBrains Mono", monospace';
+  const gr=ctx.createLinearGradient(0,0,0,640);gr.addColorStop(0,'#0B0B0D');gr.addColorStop(1,'#1d1a10');ctx.fillStyle=gr;ctx.fillRect(0,0,360,640);
+  ctx.fillStyle='#F0C44A';ctx.font='700 22px '+ff;ctx.fillText('FocusFreak',28,52);
+  ctx.fillStyle='#9a958a';ctx.font='500 14px '+ff;ctx.fillText(fmtDate(s.start)+' · '+t(CATS[s.cat].n),28,76);
+  const off=mkCanvas();drawScene(off,sceneFor(s),progressOf(s),{now:0});ctx.imageSmoothingEnabled=false;
+  ctx.save();ctx.beginPath();ctx.roundRect?ctx.roundRect(36,100,288,288,24):ctx.rect(36,100,288,288);ctx.clip();ctx.drawImage(off,0,0,96,96,36,100,288,288);ctx.restore();
+  ctx.fillStyle='#F3EFE4';ctx.font='700 26px '+ff;ctx.fillText(itemName(s).slice(0,22),28,430);
+  ctx.fillStyle='#F0C44A';ctx.font='300 56px '+mono;ctx.fillText(fmtDur(s.verified),28,500);
+  ctx.fillStyle='#9a958a';ctx.font='500 15px '+ff;ctx.fillText(bn?'যাচাইকৃত ফোকাস':'verified focus',28,526);
+  ctx.fillText((bn?'দাবিকৃত ':'claimed ')+fmtDur(s.claimed)+'  ·  '+nn(Math.round(s.verified/Math.max(1,s.claimed)*100))+'%',28,556);
+  ctx.fillStyle='#5f5b52';ctx.font='500 12px '+ff;ctx.fillText(bn?'প্রতিটা মিনিট যাচাই করা।':'Every minute checked, none guessed.',28,606);
+}
+
+/* ================= break ================= */
+let BRK=null;
+const TIPS=[['Roll your shoulders back five times.','কাঁধ পাঁচবার পেছনে ঘোরাও।'],['Look at something 6 metres away for 20 seconds.','২০ সেকেন্ড ৬ মিটার দূরের কিছুর দিকে তাকাও।'],['Drink a glass of water.','এক গ্লাস পানি খাও।'],['Stand up and stretch your arms over your head.','উঠে দাঁড়াও, হাত মাথার ওপরে টানো।'],['Close your eyes and listen to the room.','চোখ বন্ধ করে ঘরের শব্দ শোনো।']];
+function startBreak(min,routine){
+  const el=document.getElementById('brk');document.getElementById('done').hidden=true;el.hidden=false;
+  BRK={end:Date.now()+min*60000,min,routine,t0:Date.now()};
+  const tip=TIPS[Math.floor(Math.random()*TIPS.length)];
+  el.innerHTML=`<div class="ov" style="text-align:center">
+   <p class="eyebrow">${t('Break')}${routine?' · '+esc(routine.name):''}</p>
+   <h1 class="mono" id="bcd" style="font-family:var(--f-mono);font-weight:300;font-size:56px">${fmtClock(min*60)}</h1>
+   <div class="breath"><div class="ring2"></div><div class="orb"></div><b id="bph">${t('Inhale')}</b></div>
+   <p class="muted">${L()==='bn'?'বক্স ব্রিদিং: ৪ সেকেন্ড করে।':'Box breathing, four seconds each.'}</p>
+   <p style="font-size:16px">${esc(L()==='bn'?tip[1]:tip[0])}</p>
+   <div style="margin-top:auto;display:flex;flex-direction:column;gap:10px">
+    ${routine?`<button class="btn primary big" data-act="breakEnd">${t('Next block')}</button>`:''}
+    <button class="btn big" data-act="${routine?'breakEnd':'breakQuit'}">${t('Skip break')}</button>
+    ${routine?`<button class="btn ghost" data-act="breakQuit">${L()==='bn'?'রুটিন শেষ করো':'End routine'}</button>`:''}</div></div>`;
+  clearInterval(BRK.iv);BRK.iv=setInterval(()=>{if(!BRK)return;const left=(BRK.end-Date.now())/1000;
+    document.getElementById('bcd').textContent=fmtClock(left);
+    const ph=Math.floor(((Date.now()-BRK.t0)/1000%16)/4);document.getElementById('bph').textContent=t(['Inhale','Hold','Exhale','Hold'][ph]);
+    if(left<=0){AU.chime('start');if(BRK.routine)breakEnd();else breakQuit()}},250);
+}
+function breakEnd(){const r=BRK&&BRK.routine;clearInterval(BRK&&BRK.iv);BRK=null;document.getElementById('brk').hidden=true;
+  if(r){const idx=r.idx+2;if(idx<r.blocks.length){const b=r.blocks[idx];startSession(b[0],{cat:b[1],label:'',routine:Object.assign({},r,{idx,focusIdx:r.focusIdx+1})})}else{go('today')}}}
+function breakQuit(){if(BRK)clearInterval(BRK.iv);BRK=null;document.getElementById('brk').hidden=true;go('today')}
+
+/* ================= review ================= */
+let RV=null;
+function openReview(){
+  const bn=L()==='bn',today=dayStart(Date.now()),wk=S.sessions.filter(s=>s.start>=addDays(today,-6));
+  const days=[];for(let i=6;i>=0;i--){const d=addDays(today,-i);days.push({d,v:sumV(sessOn(d))})}
+  const best=days.reduce((a,b)=>b.v>a.v?b:a,days[0]),bh=bestHour(wk),wv=sumV(wk),wc=sumC(wk);
+  const g=wk.filter(s=>s.theme==='garden').length,c=wk.filter(s=>s.theme==='city').length,k=wk.filter(s=>s.theme==='sky').length;
+  const slides=[
+    `<p class="eyebrow" style="color:#9a958a">${bn?'এই সপ্তাহে':'This week'}</p><span class="k">${fmtDur(wv)}</span><h2>${bn?'যাচাইকৃত ফোকাস':'of verified focus'}</h2><p>${bn?`${nn(wk.length)}টা ব্লক, ${fmtDur(wc)} দাবিকৃত। যাচাই হয়েছে ${nn(Math.round(wv/Math.max(1,wc)*100))}%।`:`${wk.length} blocks and ${fmtDur(wc)} claimed. ${Math.round(wv/Math.max(1,wc)*100)}% of it checked out.`}</p>`,
+    `<p class="eyebrow" style="color:#9a958a">${bn?'সেরা দিন':'Best day'}</p><span class="k">${dfull(new Date(best.d).getDay())}</span><p>${bn?`${fmtDur(best.v)} যাচাইকৃত। ওই দিন কী আলাদা ছিল, মনে করে দেখো।`:`${fmtDur(best.v)} verified. Worth remembering what was different that day.`}</p>`,
+    `<p class="eyebrow" style="color:#9a958a">${bn?'সেরা সময়':'Peak hour'}</p><span class="k">${fmtHour(bh.h)}</span><p>${bn?'এই সময়টা পাহারা দাও। মিটিং বা ফোন এখানে না রাখাই ভালো।':'Guard this hour. Keep calls and errands out of it.'}</p>`,
+    `<p class="eyebrow" style="color:#9a958a">${bn?'যা বেড়েছে':'What grew'}</p><h2>${bn?`${nn(g)}টা গাছ, ${nn(c)}টা দালান, ${nn(k)}টা নক্ষত্রমণ্ডল`:`${g} plants, ${c} towers, ${k} constellations`}</h2><canvas id="rvCv" width="192" height="96"></canvas>`,
+    `<p class="eyebrow" style="color:#9a958a">${bn?'পরের সপ্তাহের জন্য':'For next week'}</p><h2>${bn?`${fmtHour(bh.h)} এর দিকে তিনটা গভীর ব্লক রাখো।`:`Book three deep blocks near ${fmtHour(bh.h)}.`}</h2><p>${bn?'ছোট লক্ষ্য, প্রতিদিন। স্ট্রিক নিজে থেকেই আসবে।':'Small, every day. The streak takes care of itself.'}</p><button class="btn primary" data-act="rvClose" style="align-self:flex-start">${t('Done')}</button>`
+  ];
+  const el=document.getElementById('review');el.hidden=false;
+  el.innerHTML=`<div class="ov"><div class="rv-bars">${slides.map(()=>'<i><b></b></i>').join('')}</div>
+   <div class="row between"><span class="eyebrow" style="color:#9a958a">FocusFreak</span><button class="btn sm ghost" data-act="rvClose" style="color:#F3EFE4;border-color:#333">${L()==='bn'?'বন্ধ':'Close'}</button></div>
+   <div class="rv-slide" id="rvS" data-act="rvNext"></div><p style="color:#6d695f;font-size:12px;text-align:center">${bn?'পরেরটায় যেতে ট্যাপ করো':'Tap to continue'}</p></div>`;
+  RV={slides,i:0,t0:Date.now()};showSlide();clearInterval(RV.iv);
+  RV.iv=setInterval(()=>{if(!RV)return;const f=(Date.now()-RV.t0)/6000;const bars=el.querySelectorAll('.rv-bars b');bars.forEach((b,i)=>b.style.width=(i<RV.i?100:i===RV.i?Math.min(100,f*100):0)+'%');if(f>=1&&RV.i<RV.slides.length-1){RV.i++;showSlide()}},100);
+}
+function showSlide(){const el=document.getElementById('rvS');el.innerHTML=RV.slides[RV.i];RV.t0=Date.now();
+  if(document.getElementById('rvCv')){const prev=S.world;const cv=document.getElementById('rvCv');const ctx=cv.getContext('2d');ctx.imageSmoothingEnabled=false;
+    const wk=S.sessions.filter(s=>s.start>=addDays(dayStart(Date.now()),-6)).slice(-6),off=mkCanvas();ctx.fillStyle='#17221d';ctx.fillRect(0,0,192,96);
+    wk.forEach((s,i)=>{drawScene(off,sceneFor(s),progressOf(s),{now:0});ctx.drawImage(off,0,0,96,96,(i%3)*64,Math.floor(i/3)*48,64,48)});S.world=prev}}
+function closeReview(){if(RV)clearInterval(RV.iv);RV=null;document.getElementById('review').hidden=true}
+
+/* ================= mixer sheet ================= */
+function openMixer(){
+  AU.init();AU.resume();
+  const bn=L()==='bn',el=document.getElementById('sheet');el.hidden=false;
+  if(!RUN)AU.apply(S.settings.mix),AU.fade(1,.6);
+  el.innerHTML=`<div class="sheet-wrap" data-act="mixClose" data-self="1"><div class="sheet" role="dialog" aria-label="${t('Sound mix')}">
+   <div class="grab"></div><div class="row between"><h2>${t('Sound mix')}</h2><button class="btn sm primary" data-act="mixClose">${t('Done')}</button></div>
+   <p class="eyebrow">${t('Presets')}</p>
+   <div class="presets">${PRESETS.map((p,i)=>`<button class="chip" data-act="preset" data-i="${i}">${bn?p.bn:p.n}</button>`).join('')}<button class="chip" data-act="preset" data-i="-1">${t('Silent')}</button></div>
+   <div style="display:flex;flex-direction:column;gap:14px" id="sndList">${SOUNDS.map(s=>sndRow(s)).join('')}</div>
+   <div class="snd"><span class="ico">${svg('note')}</span><div><div class="nm"><label for="mvol">${t('Master volume')}</label></div><input type="range" id="mvol" min="0" max="1" step="0.01" value="${S.settings.master}"></div></div>
+   <p class="muted" style="font-size:12px">${bn?'সব শব্দ এই ডিভাইসেই তৈরি হয়, কোনো ফাইল ডাউনলোড হয় না। সেশনের শুরুতে আস্তে বাড়ে, শেষে আস্তে কমে।':'Every sound is synthesised on the device, no downloads. It fades in when a block starts and out when it ends.'}</p>
+  </div></div>`;
+}
+function sndRow(s){const v=S.settings.mix[s.id]||0;return `<div class="snd"><button class="ico" data-act="sndToggle" data-id="${s.id}" aria-pressed="${v>0}" aria-label="${t(s.n)}">${svg(s.ico)}</button>
+  <div><div class="nm"><span>${t(s.n)} <small>${L()==='bn'?'':esc(s.d)}</small></span><span class="mono muted">${v>0?nn(Math.round(v*100)):''}</span></div><input type="range" data-snd="${s.id}" min="0" max="1" step="0.01" value="${v}" aria-label="${t(s.n)}"></div></div>`}
+function refreshSnd(){const l=document.getElementById('sndList');if(l)l.innerHTML=SOUNDS.map(sndRow).join('')}
+function closeMixer(){document.getElementById('sheet').hidden=true;document.getElementById('sheet').innerHTML='';save();if(!RUN){AU.fade(0,.8);setTimeout(()=>{if(!RUN)AU.stopAll()},900)}if(route()==='focus'&&!RUN)render()}
+
+/* ================= misc ================= */
+let toastT=null;
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>el.hidden=true,3200)}
+function go(r){document.getElementById('done').hidden=true;if(location.hash==='#'+r)render();else location.hash=r}
+async function copyText(s){try{await navigator.clipboard.writeText(s);toast(t('Copied'))}catch(e){toast(L()==='bn'?'কপি করা যায়নি।':'Copy is blocked here.')}}
+function applyThemeSetting(){const v=S.settings.theme,root=document.documentElement;if(v==='auto'){if(root.dataset.ffSet){root.removeAttribute('data-theme');delete root.dataset.ffSet}}else{root.setAttribute('data-theme',v);root.dataset.ffSet='1'}}
+
+const ACT={
+  quick(el){S.setup.min=+el.dataset.min;save();startSession(S.setup.min)},
+  setmin(el){S.setup.min=+el.dataset.min;save();render()},
+  setcat(el){S.setup.cat=+el.dataset.i;save();render()},
+  settheme(el){S.setup.theme=el.dataset.th;save();render()},
+  start(){S.setup.label=(document.getElementById('label')||{value:S.setup.label}).value;save();startSession(S.setup.min)},
+  routine(el){const r=ROUTINES[+el.dataset.i];const blocks=r.b;const ft=blocks.filter(b=>b.length>1).length;
+    startSession(blocks[0][0],{cat:blocks[0][1],label:'',routine:{name:L()==='bn'?r.bn:r.n,blocks,idx:0,focusIdx:1,focusTotal:ft}})},
+  mixer(){openMixer()},
+  mixClose(el,e){if(el.dataset.self&&e.target!==el)return;closeMixer()},
+  preset(el){const i=+el.dataset.i;S.settings.mix=i<0?{}:Object.assign({},PRESETS[i].mix);AU.apply(S.settings.mix);refreshSnd();save()},
+  sndToggle(el){const id=el.dataset.id,v=S.settings.mix[id]||0;S.settings.mix[id]=v>0?0:.5;AU.set(id,S.settings.mix[id]);refreshSnd();save()},
+  pause(){if(!RUN)return;accumulate();RUN.state=RUN.state==='paused'?'running':'paused';RUN.autoPaused=false;if(RUN.state==='paused')AU.fade(.25,.6);else AU.fade(1,.6);paintSession()},
+  stop(){if(!RUN)return;if(RUN.armStop>Date.now()){finish(false)}else{RUN.armStop=Date.now()+3000;paintSession()}},
+  deep(){const el=document.getElementById('session');el.classList.toggle('deep');if(el.classList.contains('deep')){try{el.requestFullscreen&&el.requestFullscreen().catch(()=>{})}catch(e){}}else{try{document.fullscreenElement&&document.exitFullscreen().catch(()=>{})}catch(e){}}},
+  deepTap(){if(document.getElementById('session').classList.contains('deep'))ACT.deep()},
+  breakGo(el){const d=document.getElementById('done'),r=d._routine;if(r&&r.blocks[r.idx+1])startBreak(r.blocks[r.idx+1][0],r);else startBreak(+(el.dataset.min||5),null)},
+  breakEnd(){breakEnd()},breakQuit(){breakQuit()},
+  home(){go('today')},
+  copySum(){const s=document.getElementById('done')._sess;if(!s)return;const bn=L()==='bn';
+    copyText(bn?`FocusFreak: ${itemName(s)}। ${fmtDur(s.verified)} যাচাইকৃত ফোকাস (${fmtDur(s.claimed)} দাবিকৃত)।`:`FocusFreak: ${itemName(s)}. ${fmtDur(s.verified)} of verified focus (${fmtDur(s.claimed)} claimed).`)},
+  review(){openReview()},rvClose(){closeReview()},
+  rvNext(el,e){if(e.target.closest('button'))return;if(RV.i<RV.slides.length-1){RV.i++;showSlide()}else closeReview()},
+  world(el){S.world=el.dataset.th;render()},
+  clearSample(){S.sessions=S.sessions.filter(s=>!s.sample);save();render();toast(L()==='bn'?'নমুনা ইতিহাস মুছে ফেলা হয়েছে।':'Sample history cleared.')},
+  backup(){copyText(JSON.stringify({app:'focusfreak-web',v:1,sessions:real(),settings:S.settings}))},
+  erase(el){if(el.dataset.arm==='1'){try{Object.keys(localStorage).filter(k=>k.startsWith('ffw.')).forEach(k=>localStorage.removeItem(k))}catch(e){}
+      S.sessions=[];S.settings=Object.assign({},DEF_SETTINGS);save();render();toast(L()==='bn'?'সব মুছে ফেলা হয়েছে।':'Everything erased.')}
+    else{el.dataset.arm='1';el.textContent=t('Tap again to erase');setTimeout(()=>{if(el.isConnected){el.dataset.arm='';el.textContent=t('Erase everything')}},3000)}},
+  lang(el){S.settings.lang=el.dataset.v;save();render()},
+  strict(){S.settings.strict=!S.settings.strict;save();render()},
+  themeSet(el){S.settings.theme=el.dataset.v;save();applyThemeSetting();render()},
+  unlock(el){const k=el.dataset.k;if(k==='aurora')S.settings.sky=S.settings.sky==='aurora'?'night':'aurora';else S.settings.tree=S.settings.tree===k?'banyan':k;save();render()}
+};
+document.addEventListener('click',e=>{const el=e.target.closest('[data-act]');if(!el)return;const f=ACT[el.dataset.act];if(f)f(el,e)});
+document.addEventListener('input',e=>{const el=e.target;
+  if(el.id==='minRange'){S.setup.min=+el.value;document.getElementById('dialMin').textContent=nn(el.value);document.querySelectorAll('[data-act=setmin]').forEach(c=>c.setAttribute('aria-pressed',+c.dataset.min===S.setup.min));
+    document.querySelectorAll('canvas[data-preview]').forEach(cv=>{cv.dataset.min=el.value;drawScene(cv,{theme:cv.dataset.preview,planned:+el.value,seed:4242,vigor:1,tree:S.settings.tree,aurora:S.settings.sky==='aurora'},1,{now:900})});
+    document.getElementById('growHint').textContent=growHint();save()}
+  else if(el.id==='label'){S.setup.label=el.value;save()}
+  else if(el.id==='intent'){S.intention.text=el.value;save()}
+  else if(el.id==='goalR'){S.settings.goal=+el.value;el.previousElementSibling.querySelector('small').textContent=fmtDur(S.settings.goal*60);save()}
+  else if(el.id==='mvol'){S.settings.master=+el.value;AU.master(+el.value);save()}
+  else if(el.dataset.snd){const id=el.dataset.snd;S.settings.mix[id]=+el.value;AU.set(id,+el.value);const row=el.closest('.snd');row.querySelector('.ico').setAttribute('aria-pressed',+el.value>0);row.querySelector('.nm .mono').textContent=+el.value>0?nn(Math.round(el.value*100)):'';save()}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!document.getElementById('sheet').hidden)closeMixer();else if(RV)closeReview();else if(document.getElementById('session').classList.contains('deep'))ACT.deep()}
+  if(e.key===' '&&RUN&&!document.getElementById('session').hidden&&document.activeElement.tagName!=='INPUT'){e.preventDefault();ACT.pause()}});
+// keep World panorama crane/beacons alive
+setInterval(()=>{if(route()==='world'&&S.world==='city'&&document.getElementById('pano')&&!RUN)drawPano()},600);
+
+applyThemeSetting();render();
+</script>
